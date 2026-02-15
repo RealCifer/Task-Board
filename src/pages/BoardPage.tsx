@@ -25,56 +25,149 @@ function BoardPage() {
   const doneTasks = tasks.filter((t) => t.column === "done")
 
   return (
-    <div style={{ padding: "20px" }}>
-      {/* Header */}
+    <div style={{ minHeight: "100vh", background: "#f4f6f8" }}>
+      
+      {/* HEADER */}
       <div
         style={{
+          background: "white",
+          padding: "20px 40px",
           display: "flex",
           justifyContent: "space-between",
-          marginBottom: "20px",
+          alignItems: "center",
+          boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
         }}
       >
-        <h1>Task Board</h1>
-        <button onClick={logout}>Logout</button>
+        <h1 style={{ fontSize: "22px" }}>Task Board</h1>
+
+        <button
+          onClick={logout}
+          style={{
+            padding: "8px 16px",
+            borderRadius: "6px",
+            border: "none",
+            background: "#ef4444",
+            color: "white",
+            fontWeight: 600,
+            cursor: "pointer",
+            transition: "0.2s",
+          }}
+          onMouseOver={(e) =>
+            (e.currentTarget.style.background = "#dc2626")
+          }
+          onMouseOut={(e) =>
+            (e.currentTarget.style.background = "#ef4444")
+          }
+        >
+          Logout
+        </button>
       </div>
 
-      {/* Add Task */}
-      <div style={{ marginBottom: "20px" }}>
-        <input
-          value={newTitle}
-          onChange={(e) => setNewTitle(e.target.value)}
-          placeholder="Enter task title..."
-          style={{ padding: "8px", marginRight: "10px" }}
-        />
-        <button onClick={handleAdd}>Add Task</button>
+      {/* CONTENT */}
+      <div style={{ padding: "30px 40px" }}>
+        
+        {/* ADD TASK BAR */}
+        <div
+          style={{
+            marginBottom: "30px",
+            display: "flex",
+            gap: "10px",
+          }}
+        >
+          <input
+            value={newTitle}
+            onChange={(e) => setNewTitle(e.target.value)}
+            placeholder="Enter task title..."
+            style={{
+              flex: 1,
+              padding: "10px",
+              borderRadius: "8px",
+              border: "1px solid #ddd",
+              fontSize: "14px",
+            }}
+          />
+
+          <button
+            onClick={handleAdd}
+            style={{
+              padding: "10px 18px",
+              borderRadius: "8px",
+              border: "none",
+              background: "#4f46e5",
+              color: "white",
+              fontWeight: 600,
+              cursor: "pointer",
+              transition: "0.2s",
+            }}
+            onMouseOver={(e) =>
+              (e.currentTarget.style.background = "#4338ca")
+            }
+            onMouseOut={(e) =>
+              (e.currentTarget.style.background = "#4f46e5")
+            }
+          >
+            Add Task
+          </button>
+        </div>
+
+        {/* BOARD GRID */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(3, 1fr)",
+            gap: "25px",
+          }}
+        >
+          <Column title="Todo">
+            {todoTasks.length === 0 ? (
+              <EmptyState />
+            ) : (
+              todoTasks.map((task) => (
+                <TaskCard key={task.id} task={task} />
+              ))
+            )}
+          </Column>
+
+          <Column title="Doing">
+            {doingTasks.length === 0 ? (
+              <EmptyState />
+            ) : (
+              doingTasks.map((task) => (
+                <TaskCard key={task.id} task={task} />
+              ))
+            )}
+          </Column>
+
+          <Column title="Done">
+            {doneTasks.length === 0 ? (
+              <EmptyState />
+            ) : (
+              doneTasks.map((task) => (
+                <TaskCard key={task.id} task={task} />
+              ))
+            )}
+          </Column>
+        </div>
       </div>
+    </div>
+  )
+}
 
-      {/* Board */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(3, 1fr)",
-          gap: "20px",
-        }}
-      >
-        <Column title="Todo">
-          {todoTasks.map((task) => (
-            <TaskCard key={task.id} task={task} />
-          ))}
-        </Column>
-
-        <Column title="Doing">
-          {doingTasks.map((task) => (
-            <TaskCard key={task.id} task={task} />
-          ))}
-        </Column>
-
-        <Column title="Done">
-          {doneTasks.map((task) => (
-            <TaskCard key={task.id} task={task} />
-          ))}
-        </Column>
-      </div>
+function EmptyState() {
+  return (
+    <div
+      style={{
+        flex: 1,
+        borderRadius: "8px",
+        border: "2px dashed #e5e7eb",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        color: "#9ca3af",
+        fontSize: "14px",
+      }}
+    >
+      No tasks yet
     </div>
   )
 }

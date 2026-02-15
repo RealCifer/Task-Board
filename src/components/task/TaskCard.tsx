@@ -12,15 +12,16 @@ function TaskCard({ task }: Props) {
     <div
       style={{
         background: "white",
-        padding: "10px",
-        borderRadius: "8px",
-        boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
+        padding: "12px",
+        borderRadius: "10px",
+        boxShadow: "0 4px 10px rgba(0,0,0,0.05)",
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
       }}
     >
-      <span>{task.title}</span>
+      <span style={{ fontSize: "14px" }}>{task.title}</span>
+
       <button
         onClick={() => deleteTask(task.id)}
         style={{
@@ -28,6 +29,7 @@ function TaskCard({ task }: Props) {
           background: "transparent",
           color: "#ef4444",
           cursor: "pointer",
+          fontWeight: 600,
         }}
       >
         ✕
