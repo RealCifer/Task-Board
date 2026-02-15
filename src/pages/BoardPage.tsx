@@ -44,7 +44,7 @@ function BoardPage() {
   return (
     <div style={{ minHeight: "100vh", background: "#f4f6f8" }}>
       
-      {}
+      {/* HEADER */}
       <div
         style={{
           background: "white",
@@ -73,10 +73,10 @@ function BoardPage() {
         </button>
       </div>
 
-      {}
+      {/* CONTENT */}
       <div style={{ padding: "30px 40px" }}>
 
-        {}
+        {/* ADD TASK FORM */}
         <div
           style={{
             marginBottom: "30px",
@@ -89,7 +89,6 @@ function BoardPage() {
             gap: "12px",
           }}
         >
-          {}
           <div style={{ display: "flex", flexDirection: "column" }}>
             <label style={{ fontSize: "12px", marginBottom: "4px" }}>
               Title
@@ -108,7 +107,6 @@ function BoardPage() {
             />
           </div>
 
-          {}
           <div style={{ display: "flex", flexDirection: "column" }}>
             <label style={{ fontSize: "12px", marginBottom: "4px" }}>
               Description
@@ -127,15 +125,8 @@ function BoardPage() {
             />
           </div>
 
-          {}
-          <div
-            style={{
-              display: "flex",
-              gap: "15px",
-              alignItems: "flex-end",
-            }}
-          >
-            {}
+          <div style={{ display: "flex", gap: "15px", alignItems: "flex-end" }}>
+            
             <div style={{ display: "flex", flexDirection: "column" }}>
               <label style={{ fontSize: "12px", marginBottom: "4px" }}>
                 Priority
@@ -157,7 +148,6 @@ function BoardPage() {
               </select>
             </div>
 
-            {}
             <div style={{ display: "flex", flexDirection: "column" }}>
               <label style={{ fontSize: "12px", marginBottom: "4px" }}>
                 Due Date
@@ -176,7 +166,6 @@ function BoardPage() {
               />
             </div>
 
-            {}
             <button
               onClick={handleAdd}
               style={{
@@ -194,7 +183,7 @@ function BoardPage() {
           </div>
         </div>
 
-        {}
+        {/* BOARD GRID */}
         <div
           style={{
             display: "grid",
@@ -202,7 +191,7 @@ function BoardPage() {
             gap: "25px",
           }}
         >
-          <Column title="Todo">
+          <Column title="Todo" columnId="todo">
             {todoTasks.length === 0
               ? <EmptyState />
               : todoTasks.map((task) => (
@@ -210,7 +199,7 @@ function BoardPage() {
                 ))}
           </Column>
 
-          <Column title="Doing">
+          <Column title="Doing" columnId="doing">
             {doingTasks.length === 0
               ? <EmptyState />
               : doingTasks.map((task) => (
@@ -218,7 +207,7 @@ function BoardPage() {
                 ))}
           </Column>
 
-          <Column title="Done">
+          <Column title="Done" columnId="done">
             {doneTasks.length === 0
               ? <EmptyState />
               : doneTasks.map((task) => (

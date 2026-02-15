@@ -1,11 +1,28 @@
+import { useBoardStore } from "../../store/boardStore"
+import { ColumnType } from "../../types/task"
+
 interface ColumnProps {
   title: string
+  columnId: ColumnType
   children?: React.ReactNode
 }
 
-function Column({ title, children }: ColumnProps) {
+function Column({ title, columnId, children }: ColumnProps) {
+  const moveTask = useBoardStore((state) => state.moveTask)
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault()
+  }
+
+  const handleDrop = (e: React.DragEvent) => {
+    const taskId = e.dataTransfer.getData("taskId")
+    moveTask(taskId, columnId)
+  }
+
   return (
     <div
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
       style={{
         background: "#f9fafb",
         padding: "15px",

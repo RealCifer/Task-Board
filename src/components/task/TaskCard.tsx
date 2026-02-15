@@ -8,8 +8,14 @@ interface Props {
 function TaskCard({ task }: Props) {
   const deleteTask = useBoardStore((state) => state.deleteTask)
 
+  const handleDragStart = (e: React.DragEvent) => {
+    e.dataTransfer.setData("taskId", task.id)
+  }
+
   return (
     <div
+      draggable
+      onDragStart={handleDragStart}
       style={{
         background: "white",
         padding: "12px",
@@ -19,9 +25,10 @@ function TaskCard({ task }: Props) {
         flexDirection: "column",
         gap: "6px",
         position: "relative",
+        cursor: "grab",
       }}
     >
-      {/* Delete */}
+      {}
       <button
         onClick={() => deleteTask(task.id)}
         style={{
@@ -38,19 +45,14 @@ function TaskCard({ task }: Props) {
         ✕
       </button>
 
-      {/* Title */}
-      <div style={{ fontWeight: 600, fontSize: "14px" }}>
-        {task.title}
-      </div>
+      <div style={{ fontWeight: 600 }}>{task.title}</div>
 
-      {/* Description */}
       {task.description && (
         <div style={{ fontSize: "12px", color: "#6b7280" }}>
           {task.description}
         </div>
       )}
 
-      {/* Meta Row */}
       <div style={{ fontSize: "11px", display: "flex", gap: "6px" }}>
         {task.priority && (
           <span
