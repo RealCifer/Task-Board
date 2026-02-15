@@ -8,16 +8,33 @@ function BoardPage() {
   const logout = useAuthStore((state) => state.logout)
   const { tasks, addTask, loadTasks } = useBoardStore()
 
-  const [newTitle, setNewTitle] = useState("")
+  const [form, setForm] = useState({
+    title: "",
+    description: "",
+    priority: "Low",
+    dueDate: "",
+  })
 
   useEffect(() => {
     loadTasks()
   }, [loadTasks])
 
   const handleAdd = () => {
-    if (!newTitle.trim()) return
-    addTask(newTitle.trim())
-    setNewTitle("")
+    if (!form.title.trim()) return
+
+    addTask({
+      title: form.title.trim(),
+      description: form.description,
+      priority: form.priority as "Low" | "Medium" | "High",
+      dueDate: form.dueDate,
+    })
+
+    setForm({
+      title: "",
+      description: "",
+      priority: "Low",
+      dueDate: "",
+    })
   }
 
   const todoTasks = tasks.filter((t) => t.column === "todo")
@@ -27,7 +44,7 @@ function BoardPage() {
   return (
     <div style={{ minHeight: "100vh", background: "#f4f6f8" }}>
       
-      {/* HEADER */}
+      {}
       <div
         style={{
           background: "white",
@@ -50,67 +67,134 @@ function BoardPage() {
             color: "white",
             fontWeight: 600,
             cursor: "pointer",
-            transition: "0.2s",
           }}
-          onMouseOver={(e) =>
-            (e.currentTarget.style.background = "#dc2626")
-          }
-          onMouseOut={(e) =>
-            (e.currentTarget.style.background = "#ef4444")
-          }
         >
           Logout
         </button>
       </div>
 
-      {/* CONTENT */}
+      {}
       <div style={{ padding: "30px 40px" }}>
-        
-        {/* ADD TASK BAR */}
+
+        {}
         <div
           style={{
             marginBottom: "30px",
+            background: "white",
+            padding: "20px",
+            borderRadius: "10px",
+            boxShadow: "0 4px 10px rgba(0,0,0,0.05)",
             display: "flex",
-            gap: "10px",
+            flexDirection: "column",
+            gap: "12px",
           }}
         >
-          <input
-            value={newTitle}
-            onChange={(e) => setNewTitle(e.target.value)}
-            placeholder="Enter task title..."
-            style={{
-              flex: 1,
-              padding: "10px",
-              borderRadius: "8px",
-              border: "1px solid #ddd",
-              fontSize: "14px",
-            }}
-          />
+          {}
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <label style={{ fontSize: "12px", marginBottom: "4px" }}>
+              Title
+            </label>
+            <input
+              placeholder="Enter task title"
+              value={form.title}
+              onChange={(e) =>
+                setForm({ ...form, title: e.target.value })
+              }
+              style={{
+                padding: "8px",
+                borderRadius: "6px",
+                border: "1px solid #ddd",
+              }}
+            />
+          </div>
 
-          <button
-            onClick={handleAdd}
+          {}
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <label style={{ fontSize: "12px", marginBottom: "4px" }}>
+              Description
+            </label>
+            <textarea
+              placeholder="Optional description"
+              value={form.description}
+              onChange={(e) =>
+                setForm({ ...form, description: e.target.value })
+              }
+              style={{
+                padding: "8px",
+                borderRadius: "6px",
+                border: "1px solid #ddd",
+              }}
+            />
+          </div>
+
+          {}
+          <div
             style={{
-              padding: "10px 18px",
-              borderRadius: "8px",
-              border: "none",
-              background: "#4f46e5",
-              color: "white",
-              fontWeight: 600,
-              cursor: "pointer",
-              transition: "0.2s",
+              display: "flex",
+              gap: "15px",
+              alignItems: "flex-end",
             }}
-            onMouseOver={(e) =>
-              (e.currentTarget.style.background = "#4338ca")
-            }
-            onMouseOut={(e) =>
-              (e.currentTarget.style.background = "#4f46e5")
-            }
           >
-            Add Task
-          </button>
+            {}
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <label style={{ fontSize: "12px", marginBottom: "4px" }}>
+                Priority
+              </label>
+              <select
+                value={form.priority}
+                onChange={(e) =>
+                  setForm({ ...form, priority: e.target.value })
+                }
+                style={{
+                  padding: "8px",
+                  borderRadius: "6px",
+                  border: "1px solid #ddd",
+                }}
+              >
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+              </select>
+            </div>
+
+            {}
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <label style={{ fontSize: "12px", marginBottom: "4px" }}>
+                Due Date
+              </label>
+              <input
+                type="date"
+                value={form.dueDate}
+                onChange={(e) =>
+                  setForm({ ...form, dueDate: e.target.value })
+                }
+                style={{
+                  padding: "8px",
+                  borderRadius: "6px",
+                  border: "1px solid #ddd",
+                }}
+              />
+            </div>
+
+            {}
+            <button
+              onClick={handleAdd}
+              style={{
+                padding: "8px 16px",
+                borderRadius: "6px",
+                border: "none",
+                background: "#4f46e5",
+                color: "white",
+                fontWeight: 600,
+                cursor: "pointer",
+              }}
+            >
+              Add Task
+            </button>
+          </div>
         </div>
 
-        {/* BOARD GRID */}
+        {}
         <div
           style={{
             display: "grid",
@@ -119,33 +203,27 @@ function BoardPage() {
           }}
         >
           <Column title="Todo">
-            {todoTasks.length === 0 ? (
-              <EmptyState />
-            ) : (
-              todoTasks.map((task) => (
-                <TaskCard key={task.id} task={task} />
-              ))
-            )}
+            {todoTasks.length === 0
+              ? <EmptyState />
+              : todoTasks.map((task) => (
+                  <TaskCard key={task.id} task={task} />
+                ))}
           </Column>
 
           <Column title="Doing">
-            {doingTasks.length === 0 ? (
-              <EmptyState />
-            ) : (
-              doingTasks.map((task) => (
-                <TaskCard key={task.id} task={task} />
-              ))
-            )}
+            {doingTasks.length === 0
+              ? <EmptyState />
+              : doingTasks.map((task) => (
+                  <TaskCard key={task.id} task={task} />
+                ))}
           </Column>
 
           <Column title="Done">
-            {doneTasks.length === 0 ? (
-              <EmptyState />
-            ) : (
-              doneTasks.map((task) => (
-                <TaskCard key={task.id} task={task} />
-              ))
-            )}
+            {doneTasks.length === 0
+              ? <EmptyState />
+              : doneTasks.map((task) => (
+                  <TaskCard key={task.id} task={task} />
+                ))}
           </Column>
         </div>
       </div>

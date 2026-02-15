@@ -16,15 +16,18 @@ function TaskCard({ task }: Props) {
         borderRadius: "10px",
         boxShadow: "0 4px 10px rgba(0,0,0,0.05)",
         display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
+        flexDirection: "column",
+        gap: "6px",
+        position: "relative",
       }}
     >
-      <span style={{ fontSize: "14px" }}>{task.title}</span>
-
+      {/* Delete */}
       <button
         onClick={() => deleteTask(task.id)}
         style={{
+          position: "absolute",
+          top: "6px",
+          right: "8px",
           border: "none",
           background: "transparent",
           color: "#ef4444",
@@ -34,6 +37,44 @@ function TaskCard({ task }: Props) {
       >
         ✕
       </button>
+
+      {/* Title */}
+      <div style={{ fontWeight: 600, fontSize: "14px" }}>
+        {task.title}
+      </div>
+
+      {/* Description */}
+      {task.description && (
+        <div style={{ fontSize: "12px", color: "#6b7280" }}>
+          {task.description}
+        </div>
+      )}
+
+      {/* Meta Row */}
+      <div style={{ fontSize: "11px", display: "flex", gap: "6px" }}>
+        {task.priority && (
+          <span
+            style={{
+              padding: "2px 6px",
+              borderRadius: "4px",
+              background:
+                task.priority === "High"
+                  ? "#fee2e2"
+                  : task.priority === "Medium"
+                  ? "#fef3c7"
+                  : "#dcfce7",
+            }}
+          >
+            {task.priority}
+          </span>
+        )}
+
+        {task.dueDate && (
+          <span style={{ color: "#6b7280" }}>
+            📅 {task.dueDate}
+          </span>
+        )}
+      </div>
     </div>
   )
 }
