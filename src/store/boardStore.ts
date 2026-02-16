@@ -11,7 +11,7 @@ interface NewTaskInput {
 interface ActivityItem {
   id: string
   message: string
-  timestamp: string
+  timestamp: number
 }
 
 interface BoardState {
@@ -28,6 +28,7 @@ const STORAGE_KEY = "task-board"
 const ACTIVITY_KEY = "task-board-activity"
 
 export const useBoardStore = create<BoardState>((set, get) => ({
+
   tasks: [],
   activity: [],
 
@@ -44,12 +45,26 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     }
   },
 
+  addActivityInternal: (message: string) => {
+    const newActivity: ActivityItem = {
+      id: crypto.randomUUID(),
+      message,
+      timestamp: Date.now(),
+    }
+
+    const updatedActivity = [newActivity, ...get().activity].slice(0, 30)
+
+    localStorage.setItem(ACTIVITY_KEY, JSON.stringify(updatedActivity))
+
+    set({ activity: updatedActivity })
+  },
+
   addTask: (taskData) => {
     const newTask: Task = {
       id: crypto.randomUUID(),
       title: taskData.title,
       description: taskData.description,
-      priority: taskData.priority,
+      priority: taskData.priority || "Low",
       dueDate: taskData.dueDate,
       createdAt: new Date().toISOString(),
       column: "todo",
@@ -57,66 +72,41 @@ export const useBoardStore = create<BoardState>((set, get) => ({
 
     const updatedTasks = [...get().tasks, newTask]
 
-    const newActivity: ActivityItem = {
-      id: crypto.randomUUID(),
-      message: `Task "${newTask.title}" created`,
-      timestamp: new Date().toISOString(),
-    }
-
-    const updatedActivity = [newActivity, ...get().activity].slice(0, 20)
-
     localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedTasks))
-    localStorage.setItem(ACTIVITY_KEY, JSON.stringify(updatedActivity))
 
-    set({
-      tasks: updatedTasks,
-      activity: updatedActivity,
-    })
+    set({ tasks: updatedTasks })
+
+    get().addActivityInternal(`Task "${newTask.title}" created`)
   },
 
   deleteTask: (id) => {
     const task = get().tasks.find((t) => t.id === id)
+    if (!task) return
+
     const updatedTasks = get().tasks.filter((t) => t.id !== id)
 
-    const newActivity: ActivityItem = {
-      id: crypto.randomUUID(),
-      message: `Task "${task?.title}" deleted`,
-      timestamp: new Date().toISOString(),
-    }
-
-    const updatedActivity = [newActivity, ...get().activity].slice(0, 20)
-
     localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedTasks))
-    localStorage.setItem(ACTIVITY_KEY, JSON.stringify(updatedActivity))
 
-    set({
-      tasks: updatedTasks,
-      activity: updatedActivity,
-    })
+    set({ tasks: updatedTasks })
+
+    get().addActivityInternal(`Task "${task.title}" deleted`)
   },
 
   moveTask: (id, column) => {
     const task = get().tasks.find((t) => t.id === id)
+    if (!task) return
+
+    if (task.column === column) return
 
     const updatedTasks = get().tasks.map((t) =>
       t.id === id ? { ...t, column } : t
     )
 
-    const newActivity: ActivityItem = {
-      id: crypto.randomUUID(),
-      message: `Task "${task?.title}" moved to ${column}`,
-      timestamp: new Date().toISOString(),
-    }
-
-    const updatedActivity = [newActivity, ...get().activity].slice(0, 20)
-
     localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedTasks))
-    localStorage.setItem(ACTIVITY_KEY, JSON.stringify(updatedActivity))
 
-    set({
-      tasks: updatedTasks,
-      activity: updatedActivity,
-    })
+    set({ tasks: updatedTasks })
+
+    get().addActivityInternal(`Task "${task.title}" moved to ${column}`)
   },
 
   resetBoard: () => {
@@ -128,4 +118,5 @@ export const useBoardStore = create<BoardState>((set, get) => ({
       activity: [],
     })
   },
+
 }))
