@@ -9,6 +9,10 @@ function BoardPage() {
   const logout = useAuthStore((state) => state.logout)
   const { tasks, addTask, loadTasks, resetBoard } = useBoardStore()
 
+  const [darkMode, setDarkMode] = useState(false)
+  const [search, setSearch] = useState("")
+  const [filterPriority, setFilterPriority] = useState("All")
+
   const [form, setForm] = useState({
     title: "",
     description: "",
@@ -39,22 +43,41 @@ function BoardPage() {
   }
 
   const handleReset = () => {
-    if (window.confirm("Are you sure you want to reset the board?")) {
+    if (window.confirm("Reset entire board?")) {
       resetBoard()
     }
   }
 
-  const todoTasks = tasks.filter((t) => t.column === "todo")
-  const doingTasks = tasks.filter((t) => t.column === "doing")
-  const doneTasks = tasks.filter((t) => t.column === "done")
+  // 🔥 FILTER + SEARCH LOGIC
+  const filteredTasks = tasks.filter((task) => {
+    const matchesSearch =
+      task.title.toLowerCase().includes(search.toLowerCase()) ||
+      task.description?.toLowerCase().includes(search.toLowerCase())
+
+    const matchesPriority =
+      filterPriority === "All" || task.priority === filterPriority
+
+    return matchesSearch && matchesPriority
+  })
+
+  const todoTasks = filteredTasks.filter((t) => t.column === "todo")
+  const doingTasks = filteredTasks.filter((t) => t.column === "doing")
+  const doneTasks = filteredTasks.filter((t) => t.column === "done")
+
+  const bgColor = darkMode
+    ? "#0f172a"
+    : "linear-gradient(to bottom, #eef2ff, #f8fafc)"
+
+  const cardBg = darkMode ? "#1e293b" : "white"
+  const textColor = darkMode ? "white" : "black"
 
   return (
     <div
       style={{
         minHeight: "100vh",
-        background: "linear-gradient(to bottom, #eef2ff, #f8fafc)",
-        display: "flex",
-        flexDirection: "column",
+        background: bgColor,
+        color: textColor,
+        transition: "all 0.3s ease",
       }}
     >
       {/* HEADER */}
@@ -68,138 +91,63 @@ function BoardPage() {
           color: "white",
         }}
       >
-        <h1 style={{ fontSize: "22px", fontWeight: 600 }}>
-          Task Board
-        </h1>
+        <h1>Task Board</h1>
 
         <div style={{ display: "flex", gap: "10px" }}>
-          <button
-            onClick={handleReset}
-            style={{
-              padding: "8px 16px",
-              borderRadius: "8px",
-              border: "none",
-              background: "#f59e0b",
-              color: "white",
-              fontWeight: 600,
-              cursor: "pointer",
-            }}
-          >
-            Reset
+          <button onClick={() => setDarkMode(!darkMode)}>
+            {darkMode ? "☀ Light" : "🌙 Dark"}
           </button>
 
-          <button
-            onClick={logout}
-            style={{
-              padding: "8px 16px",
-              borderRadius: "8px",
-              border: "none",
-              background: "#ef4444",
-              color: "white",
-              fontWeight: 600,
-              cursor: "pointer",
-            }}
-          >
-            Logout
-          </button>
+          <button onClick={handleReset}>Reset</button>
+          <button onClick={logout}>Logout</button>
         </div>
       </div>
 
-      {/* CONTENT */}
       <div
         style={{
           padding: "40px",
           maxWidth: "1200px",
           margin: "0 auto",
-          width: "100%",
         }}
       >
-        {/* FORM */}
+        {/* STATS BAR */}
         <div
           style={{
-            marginBottom: "50px",
-            background: "white",
-            padding: "30px",
-            borderRadius: "20px",
-            boxShadow: "0 20px 40px rgba(0,0,0,0.06)",
             display: "flex",
-            flexDirection: "column",
-            gap: "18px",
+            gap: "20px",
+            marginBottom: "30px",
+          }}
+        >
+          <StatCard title="Total" value={tasks.length} />
+          <StatCard title="Todo" value={todoTasks.length} />
+          <StatCard title="Doing" value={doingTasks.length} />
+          <StatCard title="Done" value={doneTasks.length} />
+        </div>
+
+        {/* SEARCH + FILTER */}
+        <div
+          style={{
+            display: "flex",
+            gap: "15px",
+            marginBottom: "30px",
           }}
         >
           <input
-            placeholder="Task title"
-            value={form.title}
-            onChange={(e) =>
-              setForm({ ...form, title: e.target.value })
-            }
-            style={{
-              padding: "14px",
-              borderRadius: "12px",
-              border: "1px solid #e5e7eb",
-            }}
+            placeholder="Search tasks..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            style={{ padding: "10px", flex: 1 }}
           />
 
-          <textarea
-            placeholder="Description (optional)"
-            value={form.description}
-            onChange={(e) =>
-              setForm({ ...form, description: e.target.value })
-            }
-            style={{
-              padding: "14px",
-              borderRadius: "12px",
-              border: "1px solid #e5e7eb",
-              resize: "none",
-            }}
-          />
-
-          <div style={{ display: "flex", gap: "15px" }}>
-            <select
-              value={form.priority}
-              onChange={(e) =>
-                setForm({ ...form, priority: e.target.value })
-              }
-              style={{
-                padding: "14px",
-                borderRadius: "12px",
-                border: "1px solid #e5e7eb",
-              }}
-            >
-              <option value="Low">Low</option>
-              <option value="Medium">Medium</option>
-              <option value="High">High</option>
-            </select>
-
-            <input
-              type="date"
-              value={form.dueDate}
-              onChange={(e) =>
-                setForm({ ...form, dueDate: e.target.value })
-              }
-              style={{
-                padding: "14px",
-                borderRadius: "12px",
-                border: "1px solid #e5e7eb",
-              }}
-            />
-
-            <button
-              onClick={handleAdd}
-              style={{
-                padding: "14px 24px",
-                borderRadius: "12px",
-                border: "none",
-                background:
-                  "linear-gradient(90deg, #4f46e5, #6366f1)",
-                color: "white",
-                fontWeight: 600,
-                cursor: "pointer",
-              }}
-            >
-              Add Task
-            </button>
-          </div>
+          <select
+            value={filterPriority}
+            onChange={(e) => setFilterPriority(e.target.value)}
+          >
+            <option value="All">All</option>
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+          </select>
         </div>
 
         {/* BOARD */}
@@ -231,6 +179,23 @@ function BoardPage() {
 
         <ActivityLog />
       </div>
+    </div>
+  )
+}
+
+function StatCard({ title, value }: { title: string; value: number }) {
+  return (
+    <div
+      style={{
+        background: "white",
+        padding: "18px",
+        borderRadius: "14px",
+        boxShadow: "0 10px 25px rgba(0,0,0,0.05)",
+        minWidth: "120px",
+      }}
+    >
+      <div style={{ fontSize: "13px", color: "#6b7280" }}>{title}</div>
+      <div style={{ fontSize: "22px", fontWeight: 600 }}>{value}</div>
     </div>
   )
 }
