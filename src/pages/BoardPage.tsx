@@ -39,7 +39,7 @@ function BoardPage() {
   }
 
   const handleReset = () => {
-    if (confirm("Are you sure you want to reset the board?")) {
+    if (window.confirm("Are you sure you want to reset the board?")) {
       resetBoard()
     }
   }
@@ -150,6 +150,7 @@ function BoardPage() {
               padding: "12px",
               borderRadius: "10px",
               border: "1px solid #e5e7eb",
+              resize: "none",
             }}
           />
 

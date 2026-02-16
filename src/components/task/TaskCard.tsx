@@ -12,6 +12,11 @@ function TaskCard({ task }: Props) {
     e.dataTransfer.setData("taskId", task.id)
   }
 
+  const isOverdue =
+    task.dueDate &&
+    new Date(task.dueDate) < new Date() &&
+    task.column !== "done"
+
   const priorityColor =
     task.priority === "High"
       ? "#fecaca"
@@ -33,6 +38,7 @@ function TaskCard({ task }: Props) {
         gap: "8px",
         position: "relative",
         cursor: "grab",
+        border: isOverdue ? "2px solid #ef4444" : "none",
         transition: "all 0.2s ease",
       }}
       onMouseEnter={(e) =>
@@ -84,6 +90,18 @@ function TaskCard({ task }: Props) {
         {task.dueDate && (
           <span style={{ fontSize: "12px", color: "#6b7280" }}>
             📅 {task.dueDate}
+          </span>
+        )}
+
+        {isOverdue && (
+          <span
+            style={{
+              fontSize: "12px",
+              color: "#ef4444",
+              fontWeight: 600,
+            }}
+          >
+            ⚠ Overdue
           </span>
         )}
       </div>
