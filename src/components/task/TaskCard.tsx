@@ -25,22 +25,29 @@ function TaskCard({ task }: Props) {
       onDragStart={handleDragStart}
       style={{
         background: "#ffffff",
-        borderRadius: "10px",
-        padding: "12px",
-        boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+        borderRadius: "14px",
+        padding: "14px",
+        boxShadow: "0 6px 18px rgba(0,0,0,0.08)",
         display: "flex",
         flexDirection: "column",
-        gap: "6px",
+        gap: "8px",
         position: "relative",
         cursor: "grab",
+        transition: "all 0.2s ease",
       }}
+      onMouseEnter={(e) =>
+        (e.currentTarget.style.transform = "translateY(-4px)")
+      }
+      onMouseLeave={(e) =>
+        (e.currentTarget.style.transform = "translateY(0px)")
+      }
     >
       <button
         onClick={() => deleteTask(task.id)}
         style={{
           position: "absolute",
-          top: "6px",
-          right: "8px",
+          top: "8px",
+          right: "10px",
           border: "none",
           background: "transparent",
           color: "#ef4444",
@@ -56,7 +63,7 @@ function TaskCard({ task }: Props) {
       </h4>
 
       {task.description && (
-        <p style={{ fontSize: "13px", color: "#555" }}>
+        <p style={{ fontSize: "13px", color: "#6b7280" }}>
           {task.description}
         </p>
       )}
@@ -64,10 +71,11 @@ function TaskCard({ task }: Props) {
       <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
         <span
           style={{
-            padding: "3px 8px",
+            padding: "4px 8px",
             borderRadius: "6px",
             background: priorityColor,
             fontSize: "12px",
+            fontWeight: 500,
           }}
         >
           {task.priority}

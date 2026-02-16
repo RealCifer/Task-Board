@@ -52,7 +52,7 @@ function BoardPage() {
     <div
       style={{
         minHeight: "100vh",
-        background: "#f4f6f8",
+        background: "#eef2ff",
         display: "flex",
         flexDirection: "column",
       }}
@@ -60,22 +60,24 @@ function BoardPage() {
       {/* HEADER */}
       <div
         style={{
-          background: "white",
-          padding: "20px 40px",
+          background: "linear-gradient(90deg, #4f46e5, #6366f1)",
+          padding: "22px 40px",
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
+          color: "white",
         }}
       >
-        <h1 style={{ fontSize: "22px" }}>Task Board</h1>
+        <h1 style={{ fontSize: "22px", fontWeight: 600 }}>
+          Task Board
+        </h1>
 
         <div style={{ display: "flex", gap: "10px" }}>
           <button
             onClick={handleReset}
             style={{
               padding: "8px 16px",
-              borderRadius: "6px",
+              borderRadius: "8px",
               border: "none",
               background: "#f59e0b",
               color: "white",
@@ -83,14 +85,14 @@ function BoardPage() {
               cursor: "pointer",
             }}
           >
-            Reset Board
+            Reset
           </button>
 
           <button
             onClick={logout}
             style={{
               padding: "8px 16px",
-              borderRadius: "6px",
+              borderRadius: "8px",
               border: "none",
               background: "#ef4444",
               color: "white",
@@ -106,7 +108,7 @@ function BoardPage() {
       {/* CONTENT */}
       <div
         style={{
-          padding: "30px 40px",
+          padding: "40px",
           maxWidth: "1200px",
           margin: "0 auto",
           width: "100%",
@@ -115,26 +117,26 @@ function BoardPage() {
         {/* FORM */}
         <div
           style={{
-            marginBottom: "30px",
+            marginBottom: "40px",
             background: "white",
-            padding: "20px",
-            borderRadius: "12px",
-            boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+            padding: "25px",
+            borderRadius: "16px",
+            boxShadow: "0 10px 25px rgba(0,0,0,0.06)",
             display: "flex",
             flexDirection: "column",
-            gap: "12px",
+            gap: "16px",
           }}
         >
           <input
-            placeholder="Title"
+            placeholder="Task title"
             value={form.title}
             onChange={(e) =>
               setForm({ ...form, title: e.target.value })
             }
             style={{
-              padding: "10px",
-              borderRadius: "8px",
-              border: "1px solid #ddd",
+              padding: "12px",
+              borderRadius: "10px",
+              border: "1px solid #e5e7eb",
             }}
           />
 
@@ -145,9 +147,9 @@ function BoardPage() {
               setForm({ ...form, description: e.target.value })
             }
             style={{
-              padding: "10px",
-              borderRadius: "8px",
-              border: "1px solid #ddd",
+              padding: "12px",
+              borderRadius: "10px",
+              border: "1px solid #e5e7eb",
             }}
           />
 
@@ -158,9 +160,9 @@ function BoardPage() {
                 setForm({ ...form, priority: e.target.value })
               }
               style={{
-                padding: "10px",
-                borderRadius: "8px",
-                border: "1px solid #ddd",
+                padding: "12px",
+                borderRadius: "10px",
+                border: "1px solid #e5e7eb",
               }}
             >
               <option value="Low">Low</option>
@@ -175,19 +177,20 @@ function BoardPage() {
                 setForm({ ...form, dueDate: e.target.value })
               }
               style={{
-                padding: "10px",
-                borderRadius: "8px",
-                border: "1px solid #ddd",
+                padding: "12px",
+                borderRadius: "10px",
+                border: "1px solid #e5e7eb",
               }}
             />
 
             <button
               onClick={handleAdd}
               style={{
-                padding: "10px 18px",
-                borderRadius: "8px",
+                padding: "12px 20px",
+                borderRadius: "10px",
                 border: "none",
-                background: "#4f46e5",
+                background:
+                  "linear-gradient(90deg, #4f46e5, #6366f1)",
                 color: "white",
                 fontWeight: 600,
                 cursor: "pointer",
@@ -203,22 +206,22 @@ function BoardPage() {
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-            gap: "25px",
+            gap: "30px",
           }}
         >
-          <Column title="Todo" columnId="todo">
+          <Column title="Todo" columnId="todo" count={todoTasks.length}>
             {todoTasks.map((task) => (
               <TaskCard key={task.id} task={task} />
             ))}
           </Column>
 
-          <Column title="Doing" columnId="doing">
+          <Column title="Doing" columnId="doing" count={doingTasks.length}>
             {doingTasks.map((task) => (
               <TaskCard key={task.id} task={task} />
             ))}
           </Column>
 
-          <Column title="Done" columnId="done">
+          <Column title="Done" columnId="done" count={doneTasks.length}>
             {doneTasks.map((task) => (
               <TaskCard key={task.id} task={task} />
             ))}

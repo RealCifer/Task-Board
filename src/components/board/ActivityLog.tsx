@@ -6,32 +6,39 @@ function ActivityLog() {
   return (
     <div
       style={{
-        marginTop: "40px",
+        marginTop: "50px",
         background: "white",
-        padding: "20px",
-        borderRadius: "12px",
-        boxShadow: "0 4px 10px rgba(0,0,0,0.05)",
+        padding: "24px",
+        borderRadius: "16px",
+        boxShadow: "0 10px 25px rgba(0,0,0,0.06)",
       }}
     >
-      <h3 style={{ marginBottom: "12px" }}>Activity Log</h3>
+      <h3 style={{ marginBottom: "15px", fontWeight: 600 }}>
+        Activity Log
+      </h3>
 
       {activity.length === 0 ? (
         <p style={{ fontSize: "13px", color: "#9ca3af" }}>
           No activity yet
         </p>
       ) : (
-        activity.map((item) => (
-          <div
-            key={item.id}
-            style={{
-              fontSize: "13px",
-              marginBottom: "8px",
-              color: "#374151",
-            }}
-          >
-            {item.message}
-          </div>
-        ))
+        activity
+          .slice()
+          .reverse()
+          .map((item) => (
+            <div
+              key={item.id}
+              style={{
+                fontSize: "13px",
+                marginBottom: "10px",
+                padding: "8px 12px",
+                background: "#f9fafb",
+                borderRadius: "8px",
+              }}
+            >
+              {item.message}
+            </div>
+          ))
       )}
     </div>
   )
