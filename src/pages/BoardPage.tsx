@@ -9,7 +9,6 @@ function BoardPage() {
   const logout = useAuthStore((state) => state.logout)
   const { tasks, addTask, loadTasks, resetBoard } = useBoardStore()
 
-  const [darkMode, setDarkMode] = useState(false)
   const [search, setSearch] = useState("")
   const [filterPriority, setFilterPriority] = useState("All")
 
@@ -48,7 +47,6 @@ function BoardPage() {
     }
   }
 
-  // 🔥 FILTER + SEARCH LOGIC
   const filteredTasks = tasks.filter((task) => {
     const matchesSearch =
       task.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -64,64 +62,92 @@ function BoardPage() {
   const doingTasks = filteredTasks.filter((t) => t.column === "doing")
   const doneTasks = filteredTasks.filter((t) => t.column === "done")
 
-  const bgColor = darkMode
-    ? "#0f172a"
-    : "linear-gradient(to bottom, #eef2ff, #f8fafc)"
-
-  const cardBg = darkMode ? "#1e293b" : "white"
-  const textColor = darkMode ? "white" : "black"
-
   return (
     <div
       style={{
         minHeight: "100vh",
-        background: bgColor,
-        color: textColor,
-        transition: "all 0.3s ease",
+        background: "linear-gradient(to bottom, #eef2ff, #f8fafc)",
       }}
     >
       {/* HEADER */}
       <div
         style={{
           background: "linear-gradient(90deg, #4f46e5, #6366f1)",
-          padding: "22px 40px",
+          padding: "24px 40px",
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
           color: "white",
         }}
       >
-        <h1>Task Board</h1>
+        <h1 style={{ fontWeight: 600 }}>Task Board</h1>
 
-        <div style={{ display: "flex", gap: "10px" }}>
-          <button onClick={() => setDarkMode(!darkMode)}>
-            {darkMode ? "☀ Light" : "🌙 Dark"}
+        <div style={{ display: "flex", gap: "12px" }}>
+          <button style={buttonSecondary} onClick={handleReset}>
+            Reset
           </button>
 
-          <button onClick={handleReset}>Reset</button>
-          <button onClick={logout}>Logout</button>
+          <button style={buttonDanger} onClick={logout}>
+            Logout
+          </button>
         </div>
       </div>
 
       <div
         style={{
-          padding: "40px",
           maxWidth: "1200px",
           margin: "0 auto",
+          padding: "40px 20px",
         }}
       >
-        {/* STATS BAR */}
-        <div
-          style={{
-            display: "flex",
-            gap: "20px",
-            marginBottom: "30px",
-          }}
-        >
-          <StatCard title="Total" value={tasks.length} />
-          <StatCard title="Todo" value={todoTasks.length} />
-          <StatCard title="Doing" value={doingTasks.length} />
-          <StatCard title="Done" value={doneTasks.length} />
+        {/* ADD TASK CARD */}
+        <div style={cardStyle}>
+          <h3 style={{ marginBottom: "20px" }}>Create Task</h3>
+
+          <input
+            placeholder="Task title"
+            value={form.title}
+            onChange={(e) =>
+              setForm({ ...form, title: e.target.value })
+            }
+            style={inputStyle}
+          />
+
+          <textarea
+            placeholder="Description (optional)"
+            value={form.description}
+            onChange={(e) =>
+              setForm({ ...form, description: e.target.value })
+            }
+            style={{ ...inputStyle, height: "80px" }}
+          />
+
+          <div style={{ display: "flex", gap: "15px" }}>
+            <select
+              value={form.priority}
+              onChange={(e) =>
+                setForm({ ...form, priority: e.target.value })
+              }
+              style={inputStyle}
+            >
+              <option value="Low">Low</option>
+              <option value="Medium">Medium</option>
+              <option value="High">High</option>
+            </select>
+
+            <input
+              type="date"
+              value={form.dueDate}
+              onChange={(e) =>
+                setForm({ ...form, dueDate: e.target.value })
+              }
+              style={inputStyle}
+            />
+
+            <button style={buttonPrimary} onClick={handleAdd}>
+              Add Task
+            </button>
+          </div>
         </div>
 
         {/* SEARCH + FILTER */}
@@ -136,12 +162,13 @@ function BoardPage() {
             placeholder="Search tasks..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            style={{ padding: "10px", flex: 1 }}
+            style={{ ...inputStyle, flex: 1 }}
           />
 
           <select
             value={filterPriority}
             onChange={(e) => setFilterPriority(e.target.value)}
+            style={inputStyle}
           >
             <option value="All">All</option>
             <option value="Low">Low</option>
@@ -183,21 +210,51 @@ function BoardPage() {
   )
 }
 
-function StatCard({ title, value }: { title: string; value: number }) {
-  return (
-    <div
-      style={{
-        background: "white",
-        padding: "18px",
-        borderRadius: "14px",
-        boxShadow: "0 10px 25px rgba(0,0,0,0.05)",
-        minWidth: "120px",
-      }}
-    >
-      <div style={{ fontSize: "13px", color: "#6b7280" }}>{title}</div>
-      <div style={{ fontSize: "22px", fontWeight: 600 }}>{value}</div>
-    </div>
-  )
+const cardStyle = {
+  background: "white",
+  padding: "25px",
+  borderRadius: "16px",
+  boxShadow: "0 10px 25px rgba(0,0,0,0.06)",
+  marginBottom: "30px",
+  display: "flex",
+  flexDirection: "column" as const,
+  gap: "15px",
+}
+
+const inputStyle = {
+  padding: "12px",
+  borderRadius: "10px",
+  border: "1px solid #e5e7eb",
+  outline: "none",
+}
+
+const buttonPrimary = {
+  padding: "12px 20px",
+  borderRadius: "10px",
+  border: "none",
+  background: "linear-gradient(90deg,#4f46e5,#6366f1)",
+  color: "white",
+  fontWeight: 600,
+  cursor: "pointer",
+}
+
+const buttonSecondary = {
+  padding: "8px 16px",
+  borderRadius: "8px",
+  border: "none",
+  background: "#f3f4f6",
+  fontWeight: 500,
+  cursor: "pointer",
+}
+
+const buttonDanger = {
+  padding: "8px 16px",
+  borderRadius: "8px",
+  border: "none",
+  background: "#ef4444",
+  color: "white",
+  fontWeight: 600,
+  cursor: "pointer",
 }
 
 export default BoardPage
