@@ -31,102 +31,65 @@ function LoginPage() {
   }
 
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh",
-        background: "#f4f6f8",
-      }}
-    >
-      <form
-        onSubmit={handleSubmit}
-        style={{
-          background: "#ffffff",
-          padding: "40px",
-          borderRadius: "12px",
-          boxShadow: "0 10px 25px rgba(0,0,0,0.08)",
-          width: "350px",
-          display: "flex",
-          flexDirection: "column",
-          gap: "15px",
-        }}
-      >
-        <h2 style={{ textAlign: "center" }}>Task Board Login</h2>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-600 via-purple-600 to-blue-600">
+      <div className="bg-white dark:bg-slate-900 w-full max-w-md rounded-2xl shadow-2xl p-8 space-y-6 transition">
 
-        <p style={{ fontSize: "13px", textAlign: "center", color: "#666" }}>
-          Demo credentials: intern@demo.com / intern123
-        </p>
+        <div className="text-center space-y-2">
+          <h2 className="text-2xl font-semibold text-slate-800 dark:text-white">
+            Task Board Login
+          </h2>
+          <p className="text-sm text-slate-500 dark:text-slate-400">
+            Demo: intern@demo.com / intern123
+          </p>
+        </div>
 
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => {
-            setEmail(e.target.value)
-            setError(null)
-          }}
-          required
-          style={{
-            padding: "10px",
-            borderRadius: "8px",
-            border: "1px solid #ddd",
-          }}
-        />
+        <form onSubmit={handleSubmit} className="space-y-4">
 
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => {
-            setPassword(e.target.value)
-            setError(null)
-          }}
-          required
-          style={{
-            padding: "10px",
-            borderRadius: "8px",
-            border: "1px solid #ddd",
-          }}
-        />
-
-        <label style={{ fontSize: "14px" }}>
           <input
-            type="checkbox"
-            checked={remember}
-            onChange={(e) => setRemember(e.target.checked)}
-            style={{ marginRight: "8px" }}
+            type="email"
+            placeholder="Email"
+            required
+            value={email}
+            onChange={(e) => {
+              setEmail(e.target.value)
+              setError(null)
+            }}
+            className="w-full px-4 py-3 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none transition"
           />
-          Remember me
-        </label>
 
-        {error && (
-          <p style={{ color: "red", fontSize: "14px" }}>{error}</p>
-        )}
+          <input
+            type="password"
+            placeholder="Password"
+            required
+            value={password}
+            onChange={(e) => {
+              setPassword(e.target.value)
+              setError(null)
+            }}
+            className="w-full px-4 py-3 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none transition"
+          />
 
-        <button
-          type="submit"
-          style={{
-            padding: "10px",
-            borderRadius: "8px",
-            border: "none",
-            background: "#4f46e5",
-            color: "white",
-            cursor: "pointer",
-            fontWeight: 600,
-            transition: "0.2s",
-          }}
-          onMouseOver={(e) =>
-            (e.currentTarget.style.background = "#4338ca")
-          }
-          onMouseOut={(e) =>
-            (e.currentTarget.style.background = "#4f46e5")
-          }
-        >
-          Login
-        </button>
-      </form>
+          <label className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
+            <input
+              type="checkbox"
+              checked={remember}
+              onChange={(e) => setRemember(e.target.checked)}
+            />
+            Remember me
+          </label>
+
+          {error && (
+            <p className="text-sm text-red-500">{error}</p>
+          )}
+
+          <button
+            type="submit"
+            className="w-full py-3 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-medium transition"
+          >
+            Login
+          </button>
+        </form>
+      </div>
     </div>
   )
 }

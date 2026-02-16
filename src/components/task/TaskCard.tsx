@@ -17,90 +17,54 @@ function TaskCard({ task }: Props) {
     new Date(task.dueDate) < new Date() &&
     task.column !== "done"
 
-  const priorityColor =
-    task.priority === "High"
-      ? "#fecaca"
-      : task.priority === "Medium"
-      ? "#fde68a"
-      : "#bbf7d0"
-
   return (
     <div
       draggable
       onDragStart={handleDragStart}
-      style={{
-        background: "#ffffff",
-        borderRadius: "14px",
-        padding: "14px",
-        boxShadow: "0 6px 18px rgba(0,0,0,0.08)",
-        display: "flex",
-        flexDirection: "column",
-        gap: "8px",
-        position: "relative",
-        cursor: "grab",
-        border: isOverdue ? "2px solid #ef4444" : "none",
-        transition: "all 0.2s ease",
-      }}
-      onMouseEnter={(e) =>
-        (e.currentTarget.style.transform = "translateY(-4px)")
-      }
-      onMouseLeave={(e) =>
-        (e.currentTarget.style.transform = "translateY(0px)")
-      }
+      className={`bg-white dark:bg-slate-800 p-4 rounded-xl shadow hover:shadow-lg transition cursor-grab ${
+        isOverdue ? "ring-2 ring-red-500" : ""
+      }`}
     >
-      <button
-        onClick={() => deleteTask(task.id)}
-        style={{
-          position: "absolute",
-          top: "8px",
-          right: "10px",
-          border: "none",
-          background: "transparent",
-          color: "#ef4444",
-          cursor: "pointer",
-          fontWeight: 600,
-        }}
-      >
-        ✕
-      </button>
+      <div className="flex justify-between items-start">
+        <h4 className="font-medium text-slate-800 dark:text-white">
+          {task.title}
+        </h4>
 
-      <h4 style={{ fontSize: "15px", fontWeight: 600 }}>
-        {task.title}
-      </h4>
+        <button
+          onClick={() => deleteTask(task.id)}
+          className="text-red-500 hover:text-red-600 text-sm"
+        >
+          ✕
+        </button>
+      </div>
 
       {task.description && (
-        <p style={{ fontSize: "13px", color: "#6b7280" }}>
+        <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">
           {task.description}
         </p>
       )}
 
-      <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+      <div className="flex gap-2 mt-3 text-xs">
         <span
-          style={{
-            padding: "4px 8px",
-            borderRadius: "6px",
-            background: priorityColor,
-            fontSize: "12px",
-            fontWeight: 500,
-          }}
+          className={`px-2 py-1 rounded-full ${
+            task.priority === "High"
+              ? "bg-red-100 text-red-600"
+              : task.priority === "Medium"
+              ? "bg-yellow-100 text-yellow-600"
+              : "bg-green-100 text-green-600"
+          }`}
         >
           {task.priority}
         </span>
 
         {task.dueDate && (
-          <span style={{ fontSize: "12px", color: "#6b7280" }}>
+          <span className="text-slate-400">
             📅 {task.dueDate}
           </span>
         )}
 
         {isOverdue && (
-          <span
-            style={{
-              fontSize: "12px",
-              color: "#ef4444",
-              fontWeight: 600,
-            }}
-          >
+          <span className="text-red-500 font-medium">
             ⚠ Overdue
           </span>
         )}

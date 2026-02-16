@@ -26,57 +26,25 @@ function Column({ title, columnId, count, children }: ColumnProps) {
     setIsOver(false)
   }
 
-  const handleLeave = () => {
-    setIsOver(false)
-  }
-
   return (
     <div
       onDragOver={handleDragOver}
       onDrop={handleDrop}
-      onDragLeave={handleLeave}
-      style={{
-        background: "white",
-        borderRadius: "18px",
-        padding: "22px",
-        minHeight: "450px",
-        display: "flex",
-        flexDirection: "column",
-        gap: "16px",
-        boxShadow: "0 15px 35px rgba(0,0,0,0.06)",
-        border: isOver
-          ? "2px dashed #6366f1"
-          : "2px solid transparent",
-        transition: "all 0.2s ease",
-      }}
+      onDragLeave={() => setIsOver(false)}
+      className={`bg-white dark:bg-slate-900 rounded-2xl p-5 shadow-md transition ${
+        isOver ? "ring-2 ring-indigo-500" : ""
+      }`}
     >
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <h3 style={{ fontSize: "16px", fontWeight: 600 }}>
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="font-semibold text-slate-800 dark:text-white">
           {title}
         </h3>
-
-        <span
-          style={{
-            background: "#eef2ff",
-            padding: "4px 10px",
-            borderRadius: "999px",
-            fontSize: "12px",
-            fontWeight: 600,
-          }}
-        >
+        <span className="text-xs bg-slate-200 dark:bg-slate-700 px-2 py-1 rounded-full">
           {count}
         </span>
       </div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
-        {children}
-      </div>
+      <div className="space-y-4">{children}</div>
     </div>
   )
 }
