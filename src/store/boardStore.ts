@@ -8,8 +8,15 @@ interface NewTaskInput {
   dueDate?: string
 }
 
+interface ActivityItem {
+  id: string
+  message: string
+  timestamp: string
+}
+
 interface BoardState {
   tasks: Task[]
+  activity: ActivityItem[]
   addTask: (task: NewTaskInput) => void
   deleteTask: (id: string) => void
   moveTask: (id: string, column: ColumnType) => void
@@ -18,21 +25,22 @@ interface BoardState {
 }
 
 const STORAGE_KEY = "task-board"
+const ACTIVITY_KEY = "task-board-activity"
 
 export const useBoardStore = create<BoardState>((set, get) => ({
   tasks: [],
+  activity: [],
 
   loadTasks: () => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY)
-      if (!stored) return
+    const storedTasks = localStorage.getItem(STORAGE_KEY)
+    const storedActivity = localStorage.getItem(ACTIVITY_KEY)
 
-      const parsed: Task[] = JSON.parse(stored)
-      if (Array.isArray(parsed)) {
-        set({ tasks: parsed })
-      }
-    } catch {
-      set({ tasks: [] })
+    if (storedTasks) {
+      set({ tasks: JSON.parse(storedTasks) })
+    }
+
+    if (storedActivity) {
+      set({ activity: JSON.parse(storedActivity) })
     }
   },
 
@@ -47,30 +55,77 @@ export const useBoardStore = create<BoardState>((set, get) => ({
       column: "todo",
     }
 
-    const updated = [...get().tasks, newTask]
+    const updatedTasks = [...get().tasks, newTask]
 
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated))
-    set({ tasks: updated })
+    const newActivity: ActivityItem = {
+      id: crypto.randomUUID(),
+      message: `Task "${newTask.title}" created`,
+      timestamp: new Date().toISOString(),
+    }
+
+    const updatedActivity = [newActivity, ...get().activity].slice(0, 20)
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedTasks))
+    localStorage.setItem(ACTIVITY_KEY, JSON.stringify(updatedActivity))
+
+    set({
+      tasks: updatedTasks,
+      activity: updatedActivity,
+    })
   },
 
   deleteTask: (id) => {
-    const updated = get().tasks.filter((t) => t.id !== id)
+    const task = get().tasks.find((t) => t.id === id)
+    const updatedTasks = get().tasks.filter((t) => t.id !== id)
 
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated))
-    set({ tasks: updated })
+    const newActivity: ActivityItem = {
+      id: crypto.randomUUID(),
+      message: `Task "${task?.title}" deleted`,
+      timestamp: new Date().toISOString(),
+    }
+
+    const updatedActivity = [newActivity, ...get().activity].slice(0, 20)
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedTasks))
+    localStorage.setItem(ACTIVITY_KEY, JSON.stringify(updatedActivity))
+
+    set({
+      tasks: updatedTasks,
+      activity: updatedActivity,
+    })
   },
 
   moveTask: (id, column) => {
-    const updated = get().tasks.map((t) =>
+    const task = get().tasks.find((t) => t.id === id)
+
+    const updatedTasks = get().tasks.map((t) =>
       t.id === id ? { ...t, column } : t
     )
 
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated))
-    set({ tasks: updated })
+    const newActivity: ActivityItem = {
+      id: crypto.randomUUID(),
+      message: `Task "${task?.title}" moved to ${column}`,
+      timestamp: new Date().toISOString(),
+    }
+
+    const updatedActivity = [newActivity, ...get().activity].slice(0, 20)
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedTasks))
+    localStorage.setItem(ACTIVITY_KEY, JSON.stringify(updatedActivity))
+
+    set({
+      tasks: updatedTasks,
+      activity: updatedActivity,
+    })
   },
 
   resetBoard: () => {
     localStorage.removeItem(STORAGE_KEY)
-    set({ tasks: [] })
+    localStorage.removeItem(ACTIVITY_KEY)
+
+    set({
+      tasks: [],
+      activity: [],
+    })
   },
 }))

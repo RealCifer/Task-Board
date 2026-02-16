@@ -3,10 +3,11 @@ import { useAuthStore } from "../store/authStore"
 import { useBoardStore } from "../store/boardStore"
 import Column from "../components/board/Column"
 import TaskCard from "../components/task/TaskCard"
+import ActivityLog from "../components/board/ActivityLog"
 
 function BoardPage() {
   const logout = useAuthStore((state) => state.logout)
-  const { tasks, addTask, loadTasks } = useBoardStore()
+  const { tasks, addTask, loadTasks, resetBoard } = useBoardStore()
 
   const [form, setForm] = useState({
     title: "",
@@ -37,6 +38,12 @@ function BoardPage() {
     })
   }
 
+  const handleReset = () => {
+    if (confirm("Are you sure you want to reset the board?")) {
+      resetBoard()
+    }
+  }
+
   const todoTasks = tasks.filter((t) => t.column === "todo")
   const doingTasks = tasks.filter((t) => t.column === "doing")
   const doneTasks = tasks.filter((t) => t.column === "done")
@@ -57,20 +64,37 @@ function BoardPage() {
       >
         <h1 style={{ fontSize: "22px" }}>Task Board</h1>
 
-        <button
-          onClick={logout}
-          style={{
-            padding: "8px 16px",
-            borderRadius: "6px",
-            border: "none",
-            background: "#ef4444",
-            color: "white",
-            fontWeight: 600,
-            cursor: "pointer",
-          }}
-        >
-          Logout
-        </button>
+        <div style={{ display: "flex", gap: "10px" }}>
+          <button
+            onClick={handleReset}
+            style={{
+              padding: "8px 16px",
+              borderRadius: "6px",
+              border: "none",
+              background: "#f59e0b",
+              color: "white",
+              fontWeight: 600,
+              cursor: "pointer",
+            }}
+          >
+            Reset Board
+          </button>
+
+          <button
+            onClick={logout}
+            style={{
+              padding: "8px 16px",
+              borderRadius: "6px",
+              border: "none",
+              background: "#ef4444",
+              color: "white",
+              fontWeight: 600,
+              cursor: "pointer",
+            }}
+          >
+            Logout
+          </button>
+        </div>
       </div>
 
       {/* CONTENT */}
@@ -126,7 +150,6 @@ function BoardPage() {
           </div>
 
           <div style={{ display: "flex", gap: "15px", alignItems: "flex-end" }}>
-            
             <div style={{ display: "flex", flexDirection: "column" }}>
               <label style={{ fontSize: "12px", marginBottom: "4px" }}>
                 Priority
@@ -215,6 +238,9 @@ function BoardPage() {
                 ))}
           </Column>
         </div>
+
+        {/* ACTIVITY LOG */}
+        <ActivityLog />
       </div>
     </div>
   )
