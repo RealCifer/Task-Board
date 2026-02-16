@@ -20,7 +20,9 @@ function Column({ title, columnId, count, children }: ColumnProps) {
 
   const handleDrop = (e: React.DragEvent) => {
     const taskId = e.dataTransfer.getData("taskId")
-    moveTask(taskId, columnId)
+    if (taskId) {
+      moveTask(taskId, columnId)
+    }
     setIsOver(false)
   }
 
@@ -35,14 +37,17 @@ function Column({ title, columnId, count, children }: ColumnProps) {
       onDragLeave={handleLeave}
       style={{
         background: "white",
-        borderRadius: "16px",
-        padding: "20px",
+        borderRadius: "18px",
+        padding: "22px",
         minHeight: "450px",
         display: "flex",
         flexDirection: "column",
-        gap: "15px",
-        boxShadow: "0 10px 25px rgba(0,0,0,0.06)",
-        border: isOver ? "2px solid #6366f1" : "1px solid #f3f4f6",
+        gap: "16px",
+        boxShadow: "0 15px 35px rgba(0,0,0,0.06)",
+        border: isOver
+          ? "2px dashed #6366f1"
+          : "2px solid transparent",
+        transition: "all 0.2s ease",
       }}
     >
       <div
@@ -58,9 +63,9 @@ function Column({ title, columnId, count, children }: ColumnProps) {
 
         <span
           style={{
-            background: "#e0e7ff",
+            background: "#eef2ff",
             padding: "4px 10px",
-            borderRadius: "20px",
+            borderRadius: "999px",
             fontSize: "12px",
             fontWeight: 600,
           }}
@@ -69,7 +74,9 @@ function Column({ title, columnId, count, children }: ColumnProps) {
         </span>
       </div>
 
-      {children}
+      <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+        {children}
+      </div>
     </div>
   )
 }

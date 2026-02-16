@@ -6,14 +6,14 @@ function ActivityLog() {
   return (
     <div
       style={{
-        marginTop: "50px",
+        marginTop: "60px",
         background: "white",
-        padding: "24px",
-        borderRadius: "16px",
-        boxShadow: "0 10px 25px rgba(0,0,0,0.06)",
+        padding: "28px",
+        borderRadius: "18px",
+        boxShadow: "0 15px 35px rgba(0,0,0,0.06)",
       }}
     >
-      <h3 style={{ marginBottom: "15px", fontWeight: 600 }}>
+      <h3 style={{ marginBottom: "20px", fontWeight: 600 }}>
         Activity Log
       </h3>
 
@@ -29,11 +29,11 @@ function ActivityLog() {
             <div
               key={item.id}
               style={{
+                padding: "10px 14px",
+                background: "#f9fafb",
+                borderRadius: "10px",
                 fontSize: "13px",
                 marginBottom: "10px",
-                padding: "8px 12px",
-                background: "#f9fafb",
-                borderRadius: "8px",
               }}
             >
               {item.message}

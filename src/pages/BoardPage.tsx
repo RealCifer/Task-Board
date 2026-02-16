@@ -52,7 +52,7 @@ function BoardPage() {
     <div
       style={{
         minHeight: "100vh",
-        background: "#eef2ff",
+        background: "linear-gradient(to bottom, #eef2ff, #f8fafc)",
         display: "flex",
         flexDirection: "column",
       }}
@@ -117,14 +117,14 @@ function BoardPage() {
         {/* FORM */}
         <div
           style={{
-            marginBottom: "40px",
+            marginBottom: "50px",
             background: "white",
-            padding: "25px",
-            borderRadius: "16px",
-            boxShadow: "0 10px 25px rgba(0,0,0,0.06)",
+            padding: "30px",
+            borderRadius: "20px",
+            boxShadow: "0 20px 40px rgba(0,0,0,0.06)",
             display: "flex",
             flexDirection: "column",
-            gap: "16px",
+            gap: "18px",
           }}
         >
           <input
@@ -134,8 +134,8 @@ function BoardPage() {
               setForm({ ...form, title: e.target.value })
             }
             style={{
-              padding: "12px",
-              borderRadius: "10px",
+              padding: "14px",
+              borderRadius: "12px",
               border: "1px solid #e5e7eb",
             }}
           />
@@ -147,8 +147,8 @@ function BoardPage() {
               setForm({ ...form, description: e.target.value })
             }
             style={{
-              padding: "12px",
-              borderRadius: "10px",
+              padding: "14px",
+              borderRadius: "12px",
               border: "1px solid #e5e7eb",
               resize: "none",
             }}
@@ -161,8 +161,8 @@ function BoardPage() {
                 setForm({ ...form, priority: e.target.value })
               }
               style={{
-                padding: "12px",
-                borderRadius: "10px",
+                padding: "14px",
+                borderRadius: "12px",
                 border: "1px solid #e5e7eb",
               }}
             >
@@ -178,8 +178,8 @@ function BoardPage() {
                 setForm({ ...form, dueDate: e.target.value })
               }
               style={{
-                padding: "12px",
-                borderRadius: "10px",
+                padding: "14px",
+                borderRadius: "12px",
                 border: "1px solid #e5e7eb",
               }}
             />
@@ -187,8 +187,8 @@ function BoardPage() {
             <button
               onClick={handleAdd}
               style={{
-                padding: "12px 20px",
-                borderRadius: "10px",
+                padding: "14px 24px",
+                borderRadius: "12px",
                 border: "none",
                 background:
                   "linear-gradient(90deg, #4f46e5, #6366f1)",
