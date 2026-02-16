@@ -9,6 +9,10 @@ function BoardPage() {
   const logout = useAuthStore((state) => state.logout)
   const { tasks, addTask, loadTasks, resetBoard } = useBoardStore()
 
+  const [darkMode, setDarkMode] = useState(
+    localStorage.getItem("theme") === "dark"
+  )
+
   const [search, setSearch] = useState("")
   const [filterPriority, setFilterPriority] = useState("All")
 
@@ -22,6 +26,10 @@ function BoardPage() {
   useEffect(() => {
     loadTasks()
   }, [loadTasks])
+
+  useEffect(() => {
+    localStorage.setItem("theme", darkMode ? "dark" : "light")
+  }, [darkMode])
 
   const handleAdd = () => {
     if (!form.title.trim()) return
@@ -62,11 +70,27 @@ function BoardPage() {
   const doingTasks = filteredTasks.filter((t) => t.column === "doing")
   const doneTasks = filteredTasks.filter((t) => t.column === "done")
 
+  const theme = darkMode
+    ? {
+        background: "#0f172a",
+        card: "#1e293b",
+        text: "white",
+        subText: "#94a3b8",
+      }
+    : {
+        background: "#f8fafc",
+        card: "white",
+        text: "#111827",
+        subText: "#6b7280",
+      }
+
   return (
     <div
       style={{
         minHeight: "100vh",
-        background: "linear-gradient(to bottom, #eef2ff, #f8fafc)",
+        background: theme.background,
+        color: theme.text,
+        transition: "0.3s",
       }}
     >
       {/* HEADER */}
@@ -80,9 +104,16 @@ function BoardPage() {
           color: "white",
         }}
       >
-        <h1 style={{ fontWeight: 600 }}>Task Board</h1>
+        <h1>Task Board</h1>
 
-        <div style={{ display: "flex", gap: "12px" }}>
+        <div style={{ display: "flex", gap: "10px" }}>
+          <button
+            onClick={() => setDarkMode(!darkMode)}
+            style={buttonSecondary}
+          >
+            {darkMode ? "☀ Light" : "🌙 Dark"}
+          </button>
+
           <button style={buttonSecondary} onClick={handleReset}>
             Reset
           </button>
@@ -93,16 +124,16 @@ function BoardPage() {
         </div>
       </div>
 
-      <div
-        style={{
-          maxWidth: "1200px",
-          margin: "0 auto",
-          padding: "40px 20px",
-        }}
-      >
-        {/* ADD TASK CARD */}
-        <div style={cardStyle}>
-          <h3 style={{ marginBottom: "20px" }}>Create Task</h3>
+      <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "40px 20px" }}>
+        {/* ADD TASK */}
+        <div
+          style={{
+            ...cardStyle,
+            background: theme.card,
+            color: theme.text,
+          }}
+        >
+          <h3>Create Task</h3>
 
           <input
             placeholder="Task title"
@@ -114,7 +145,7 @@ function BoardPage() {
           />
 
           <textarea
-            placeholder="Description (optional)"
+            placeholder="Description"
             value={form.description}
             onChange={(e) =>
               setForm({ ...form, description: e.target.value })
@@ -122,7 +153,7 @@ function BoardPage() {
             style={{ ...inputStyle, height: "80px" }}
           />
 
-          <div style={{ display: "flex", gap: "15px" }}>
+          <div style={{ display: "flex", gap: "10px" }}>
             <select
               value={form.priority}
               onChange={(e) =>
@@ -150,14 +181,8 @@ function BoardPage() {
           </div>
         </div>
 
-        {/* SEARCH + FILTER */}
-        <div
-          style={{
-            display: "flex",
-            gap: "15px",
-            marginBottom: "30px",
-          }}
-        >
+        {/* SEARCH */}
+        <div style={{ display: "flex", gap: "10px", marginBottom: "30px" }}>
           <input
             placeholder="Search tasks..."
             value={search}
@@ -211,10 +236,9 @@ function BoardPage() {
 }
 
 const cardStyle = {
-  background: "white",
   padding: "25px",
   borderRadius: "16px",
-  boxShadow: "0 10px 25px rgba(0,0,0,0.06)",
+  boxShadow: "0 10px 25px rgba(0,0,0,0.08)",
   marginBottom: "30px",
   display: "flex",
   flexDirection: "column" as const,
@@ -224,12 +248,12 @@ const cardStyle = {
 const inputStyle = {
   padding: "12px",
   borderRadius: "10px",
-  border: "1px solid #e5e7eb",
+  border: "1px solid #d1d5db",
   outline: "none",
 }
 
 const buttonPrimary = {
-  padding: "12px 20px",
+  padding: "12px 18px",
   borderRadius: "10px",
   border: "none",
   background: "linear-gradient(90deg,#4f46e5,#6366f1)",
@@ -239,16 +263,15 @@ const buttonPrimary = {
 }
 
 const buttonSecondary = {
-  padding: "8px 16px",
+  padding: "8px 14px",
   borderRadius: "8px",
   border: "none",
-  background: "#f3f4f6",
-  fontWeight: 500,
+  background: "#e5e7eb",
   cursor: "pointer",
 }
 
 const buttonDanger = {
-  padding: "8px 16px",
+  padding: "8px 14px",
   borderRadius: "8px",
   border: "none",
   background: "#ef4444",
