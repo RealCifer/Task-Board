@@ -6,14 +6,14 @@ function ActivityLog() {
   return (
     <div
       style={{
+        marginTop: "40px",
         background: "white",
         padding: "20px",
-        borderRadius: "10px",
+        borderRadius: "12px",
         boxShadow: "0 4px 10px rgba(0,0,0,0.05)",
-        marginTop: "30px",
       }}
     >
-      <h3 style={{ marginBottom: "15px" }}>Activity Log</h3>
+      <h3 style={{ marginBottom: "12px" }}>Activity Log</h3>
 
       {activity.length === 0 ? (
         <p style={{ fontSize: "13px", color: "#9ca3af" }}>

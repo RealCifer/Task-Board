@@ -12,15 +12,22 @@ function TaskCard({ task }: Props) {
     e.dataTransfer.setData("taskId", task.id)
   }
 
+  const priorityColor =
+    task.priority === "High"
+      ? "#fecaca"
+      : task.priority === "Medium"
+      ? "#fde68a"
+      : "#bbf7d0"
+
   return (
     <div
       draggable
       onDragStart={handleDragStart}
       style={{
-        background: "white",
-        padding: "12px",
+        background: "#ffffff",
         borderRadius: "10px",
-        boxShadow: "0 4px 10px rgba(0,0,0,0.05)",
+        padding: "12px",
+        boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
         display: "flex",
         flexDirection: "column",
         gap: "6px",
@@ -28,7 +35,6 @@ function TaskCard({ task }: Props) {
         cursor: "grab",
       }}
     >
-      {}
       <button
         onClick={() => deleteTask(task.id)}
         style={{
@@ -45,34 +51,30 @@ function TaskCard({ task }: Props) {
         ✕
       </button>
 
-      <div style={{ fontWeight: 600 }}>{task.title}</div>
+      <h4 style={{ fontSize: "15px", fontWeight: 600 }}>
+        {task.title}
+      </h4>
 
       {task.description && (
-        <div style={{ fontSize: "12px", color: "#6b7280" }}>
+        <p style={{ fontSize: "13px", color: "#555" }}>
           {task.description}
-        </div>
+        </p>
       )}
 
-      <div style={{ fontSize: "11px", display: "flex", gap: "6px" }}>
-        {task.priority && (
-          <span
-            style={{
-              padding: "2px 6px",
-              borderRadius: "4px",
-              background:
-                task.priority === "High"
-                  ? "#fee2e2"
-                  : task.priority === "Medium"
-                  ? "#fef3c7"
-                  : "#dcfce7",
-            }}
-          >
-            {task.priority}
-          </span>
-        )}
+      <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+        <span
+          style={{
+            padding: "3px 8px",
+            borderRadius: "6px",
+            background: priorityColor,
+            fontSize: "12px",
+          }}
+        >
+          {task.priority}
+        </span>
 
         {task.dueDate && (
-          <span style={{ color: "#6b7280" }}>
+          <span style={{ fontSize: "12px", color: "#6b7280" }}>
             📅 {task.dueDate}
           </span>
         )}
