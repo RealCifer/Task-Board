@@ -77,33 +77,36 @@ function BoardPage() {
   const doneTasks = filteredTasks.filter((t) => t.column === "done")
 
   return (
-    <div className="min-h-screen bg-slate-100 dark:bg-slate-950 transition">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-slate-100 transition-all duration-500">
 
       {/* HEADER */}
-      <div className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-          <h1 className="text-xl font-semibold text-slate-800 dark:text-white">
+      <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 shadow-xl">
+        <div className="max-w-6xl mx-auto px-6 py-6 flex justify-between items-center">
+          <h1 className="text-2xl font-semibold tracking-tight">
             Task Board
           </h1>
 
           <div className="flex gap-3">
             <button
               onClick={() => setDarkMode(!darkMode)}
-              className="px-4 py-2 rounded-lg bg-slate-200 dark:bg-slate-700 text-sm font-medium"
+              className="px-4 py-2 rounded-lg bg-white/20 backdrop-blur-md hover:bg-white/30 transition text-sm"
+              title="Toggle theme"
             >
               {darkMode ? "☀ Light" : "🌙 Dark"}
             </button>
 
             <button
               onClick={handleReset}
-              className="px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-600 text-white text-sm font-medium transition"
+              className="px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-600 transition text-sm font-medium"
+              title="Reset board"
             >
               Reset
             </button>
 
             <button
               onClick={logout}
-              className="px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white text-sm font-medium transition"
+              className="px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 transition text-sm font-medium"
+              title="Logout"
             >
               Logout
             </button>
@@ -111,11 +114,11 @@ function BoardPage() {
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-6 py-10">
+      <div className="max-w-6xl mx-auto px-6 py-12">
 
         {/* CREATE TASK */}
-        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-md mb-8 space-y-4">
-          <h3 className="font-semibold text-slate-800 dark:text-white">
+        <div className="bg-slate-900/60 backdrop-blur-xl border border-slate-700 rounded-2xl p-8 shadow-2xl mb-10">
+          <h3 className="text-lg font-semibold mb-6 text-slate-200">
             Create Task
           </h3>
 
@@ -125,7 +128,7 @@ function BoardPage() {
             onChange={(e) =>
               setForm({ ...form, title: e.target.value })
             }
-            className="w-full px-4 py-3 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 dark:text-white"
+            className="w-full bg-slate-800/70 border border-slate-700 rounded-lg px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none transition mb-4"
           />
 
           <textarea
@@ -134,7 +137,7 @@ function BoardPage() {
             onChange={(e) =>
               setForm({ ...form, description: e.target.value })
             }
-            className="w-full px-4 py-3 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 dark:text-white"
+            className="w-full bg-slate-800/70 border border-slate-700 rounded-lg px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none transition mb-4"
           />
 
           <div className="flex gap-4">
@@ -143,7 +146,7 @@ function BoardPage() {
               onChange={(e) =>
                 setForm({ ...form, priority: e.target.value })
               }
-              className="px-4 py-3 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 dark:text-white"
+              className="bg-slate-800/70 border border-slate-700 rounded-lg px-4 py-3"
             >
               <option value="Low">Low</option>
               <option value="Medium">Medium</option>
@@ -156,12 +159,13 @@ function BoardPage() {
               onChange={(e) =>
                 setForm({ ...form, dueDate: e.target.value })
               }
-              className="px-4 py-3 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 dark:text-white"
+              className="bg-slate-800/70 border border-slate-700 rounded-lg px-4 py-3"
             />
 
             <button
               onClick={handleAdd}
-              className="px-6 py-3 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-medium transition"
+              className="px-6 py-3 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 hover:shadow-[0_0_20px_rgba(99,102,241,0.5)] transition font-medium"
+              title="Add new task"
             >
               Add Task
             </button>
@@ -169,18 +173,18 @@ function BoardPage() {
         </div>
 
         {/* SEARCH */}
-        <div className="flex gap-4 mb-8">
+        <div className="flex gap-4 mb-10">
           <input
             placeholder="Search tasks..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="flex-1 px-4 py-3 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 dark:text-white"
+            className="flex-1 bg-slate-800/70 border border-slate-700 rounded-lg px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none transition"
           />
 
           <select
             value={filterPriority}
             onChange={(e) => setFilterPriority(e.target.value)}
-            className="px-4 py-3 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 dark:text-white"
+            className="bg-slate-800/70 border border-slate-700 rounded-lg px-4 py-3"
           >
             <option value="All">All</option>
             <option value="Low">Low</option>
@@ -190,7 +194,7 @@ function BoardPage() {
         </div>
 
         {/* BOARD */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <Column title="Todo" columnId="todo" count={todoTasks.length}>
             {todoTasks.map((task) => (
               <TaskCard key={task.id} task={task} />

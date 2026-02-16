@@ -31,15 +31,18 @@ function Column({ title, columnId, count, children }: ColumnProps) {
       onDragOver={handleDragOver}
       onDrop={handleDrop}
       onDragLeave={() => setIsOver(false)}
-      className={`bg-white dark:bg-slate-900 rounded-2xl p-5 shadow-md transition ${
-        isOver ? "ring-2 ring-indigo-500" : ""
+      className={`rounded-2xl p-6 transition-all duration-300 ${
+        isOver
+          ? "bg-indigo-600/10 border-2 border-indigo-500 shadow-lg"
+          : "bg-slate-900/50 border border-slate-800 hover:shadow-xl"
       }`}
     >
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="font-semibold text-slate-800 dark:text-white">
+      <div className="flex justify-between items-center mb-6">
+        <h3 className="font-semibold text-slate-200 tracking-tight">
           {title}
         </h3>
-        <span className="text-xs bg-slate-200 dark:bg-slate-700 px-2 py-1 rounded-full">
+
+        <span className="bg-indigo-500/20 text-indigo-300 text-xs px-3 py-1 rounded-full">
           {count}
         </span>
       </div>
