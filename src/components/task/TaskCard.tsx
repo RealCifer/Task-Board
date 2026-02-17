@@ -1,3 +1,4 @@
+import { motion } from "framer-motion"
 import { Task } from "../../types/task"
 import { useBoardStore } from "../../store/boardStore"
 
@@ -19,7 +20,12 @@ function TaskCard({ task, onClick }: Props) {
     task.column !== "done"
 
   return (
-    <div
+    <motion.div
+      layout
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.9 }}
+      transition={{ type: "spring", stiffness: 260, damping: 20 }}
       onClick={onClick}
       draggable
       onDragStart={handleDragStart}
@@ -39,7 +45,6 @@ function TaskCard({ task, onClick }: Props) {
             deleteTask(task.id)
           }}
           className="text-red-400 hover:text-red-500 text-sm"
-          title="Delete task"
         >
           ✕
         </button>
@@ -76,7 +81,7 @@ function TaskCard({ task, onClick }: Props) {
           </span>
         )}
       </div>
-    </div>
+    </motion.div>
   )
 }
 

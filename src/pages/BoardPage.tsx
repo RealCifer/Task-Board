@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { motion, AnimatePresence } from "framer-motion"
 import { useAuthStore } from "../store/authStore"
 import { useBoardStore } from "../store/boardStore"
 import { Task } from "../types/task"
@@ -81,10 +82,17 @@ function BoardPage() {
   const doneTasks = filteredTasks.filter((t) => t.column === "done")
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-slate-100 transition-all duration-500">
+    <motion.div
+      layout
+      className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-slate-100 transition-all duration-500"
+    >
 
       {/* HEADER */}
-      <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 shadow-xl">
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 shadow-xl"
+      >
         <div className="max-w-6xl mx-auto px-6 py-6 flex justify-between items-center">
           <h1 className="text-2xl font-semibold tracking-tight">
             Task Board
@@ -102,7 +110,6 @@ function BoardPage() {
             <button
               onClick={handleReset}
               className="px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-600 transition text-sm font-medium"
-              title="Reset board"
             >
               Reset
             </button>
@@ -110,18 +117,22 @@ function BoardPage() {
             <button
               onClick={logout}
               className="px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 transition text-sm font-medium"
-              title="Logout"
             >
               Logout
             </button>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       <div className="max-w-6xl mx-auto px-6 py-12">
 
         {/* CREATE TASK */}
-        <div className="bg-slate-900/60 backdrop-blur-xl border border-slate-700 rounded-2xl p-8 shadow-2xl mb-10">
+        <motion.div
+          layout
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-slate-900/60 backdrop-blur-xl border border-slate-700 rounded-2xl p-8 shadow-2xl mb-10"
+        >
           <h3 className="text-lg font-semibold mb-6 text-slate-200">
             Create Task
           </h3>
@@ -169,78 +180,66 @@ function BoardPage() {
             <button
               onClick={handleAdd}
               className="px-6 py-3 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 hover:shadow-[0_0_20px_rgba(99,102,241,0.5)] transition font-medium"
-              title="Add new task"
             >
               Add Task
             </button>
           </div>
-        </div>
-
-        {/* SEARCH */}
-        <div className="flex gap-4 mb-10">
-          <input
-            placeholder="Search tasks..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="flex-1 bg-slate-800/70 border border-slate-700 rounded-lg px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none transition"
-          />
-
-          <select
-            value={filterPriority}
-            onChange={(e) => setFilterPriority(e.target.value)}
-            className="bg-slate-800/70 border border-slate-700 rounded-lg px-4 py-3"
-          >
-            <option value="All">All</option>
-            <option value="Low">Low</option>
-            <option value="Medium">Medium</option>
-            <option value="High">High</option>
-          </select>
-        </div>
+        </motion.div>
 
         {/* BOARD */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <motion.div
+          layout
+          className="grid grid-cols-1 md:grid-cols-3 gap-8"
+        >
           <Column title="Todo" columnId="todo" count={todoTasks.length}>
-            {todoTasks.map((task) => (
-              <TaskCard
-                key={task.id}
-                task={task}
-                onClick={() => setSelectedTask(task)}
-              />
-            ))}
+            <AnimatePresence>
+              {todoTasks.map((task) => (
+                <TaskCard
+                  key={task.id}
+                  task={task}
+                  onClick={() => setSelectedTask(task)}
+                />
+              ))}
+            </AnimatePresence>
           </Column>
 
           <Column title="Doing" columnId="doing" count={doingTasks.length}>
-            {doingTasks.map((task) => (
-              <TaskCard
-                key={task.id}
-                task={task}
-                onClick={() => setSelectedTask(task)}
-              />
-            ))}
+            <AnimatePresence>
+              {doingTasks.map((task) => (
+                <TaskCard
+                  key={task.id}
+                  task={task}
+                  onClick={() => setSelectedTask(task)}
+                />
+              ))}
+            </AnimatePresence>
           </Column>
 
           <Column title="Done" columnId="done" count={doneTasks.length}>
-            {doneTasks.map((task) => (
-              <TaskCard
-                key={task.id}
-                task={task}
-                onClick={() => setSelectedTask(task)}
-              />
-            ))}
+            <AnimatePresence>
+              {doneTasks.map((task) => (
+                <TaskCard
+                  key={task.id}
+                  task={task}
+                  onClick={() => setSelectedTask(task)}
+                />
+              ))}
+            </AnimatePresence>
           </Column>
-        </div>
+        </motion.div>
 
         <ActivityLog />
       </div>
 
-      {/* EDIT DRAWER */}
-      {selectedTask && (
-        <EditTaskDrawer
-          task={selectedTask}
-          onClose={() => setSelectedTask(null)}
-        />
-      )}
-    </div>
+      <AnimatePresence>
+        {selectedTask && (
+          <EditTaskDrawer
+            task={selectedTask}
+            onClose={() => setSelectedTask(null)}
+          />
+        )}
+      </AnimatePresence>
+    </motion.div>
   )
 }
 

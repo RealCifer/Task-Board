@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { motion } from "framer-motion"
 import { useBoardStore } from "../../store/boardStore"
 import { ColumnType } from "../../types/task"
 
@@ -20,17 +21,19 @@ function Column({ title, columnId, count, children }: ColumnProps) {
 
   const handleDrop = (e: React.DragEvent) => {
     const taskId = e.dataTransfer.getData("taskId")
-    if (taskId) {
-      moveTask(taskId, columnId)
-    }
+    if (taskId) moveTask(taskId, columnId)
     setIsOver(false)
   }
 
   return (
-    <div
+    <motion.div
+      layout
       onDragOver={handleDragOver}
       onDrop={handleDrop}
       onDragLeave={() => setIsOver(false)}
+      initial={{ opacity: 0, y: 40 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ type: "spring", stiffness: 120 }}
       className={`rounded-2xl p-6 transition-all duration-300 ${
         isOver
           ? "bg-indigo-600/10 border-2 border-indigo-500 shadow-lg"
@@ -48,7 +51,7 @@ function Column({ title, columnId, count, children }: ColumnProps) {
       </div>
 
       <div className="space-y-4">{children}</div>
-    </div>
+    </motion.div>
   )
 }
 
