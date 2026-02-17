@@ -34,7 +34,6 @@ function BoardPage() {
     localStorage.getItem("theme") === "dark"
   )
 
-  // ✅ NEW: Search + Filter
   const [search, setSearch] = useState("")
   const [priorityFilter, setPriorityFilter] = useState("All")
 
@@ -43,7 +42,7 @@ function BoardPage() {
     description: "",
     priority: "Low",
     dueDate: "",
-    tags: "", // ✅ NEW
+    tags: "",
   })
 
   useEffect(() => {
@@ -71,7 +70,7 @@ function BoardPage() {
       tags: form.tags
         .split(",")
         .map((t) => t.trim())
-        .filter(Boolean), // ✅ NEW
+        .filter(Boolean),
     })
 
     setForm({
@@ -97,14 +96,22 @@ function BoardPage() {
     })
   }
 
-  // ✅ NEW: Filter + Sort BEFORE splitting columns
+  // 🔥 FULL ENGINEER LEVEL FILTER + SEARCH + SORT
   const processedTasks = useMemo(() => {
     let filtered = [...tasks]
 
-    if (search) {
-      filtered = filtered.filter((task) =>
-        task.title.toLowerCase().includes(search.toLowerCase())
-      )
+    const searchLower = search.toLowerCase()
+
+    if (searchLower) {
+      filtered = filtered.filter((task) => {
+        const inTitle = task.title.toLowerCase().includes(searchLower)
+        const inDesc = task.description?.toLowerCase().includes(searchLower)
+        const inTags = task.tags?.some((tag) =>
+          tag.toLowerCase().includes(searchLower)
+        )
+
+        return inTitle || inDesc || inTags
+      })
     }
 
     if (priorityFilter !== "All") {
@@ -203,7 +210,6 @@ function BoardPage() {
         </motion.div>
 
         <div className="flex">
-          {/* SIDEBAR */}
           <AnimatePresence>
             {sidebarOpen && (
               <motion.div
@@ -223,14 +229,15 @@ function BoardPage() {
 
           <motion.div layout className="flex-1 p-10">
 
-            {/* ✅ NEW FILTER BAR */}
+            {/* FILTER BAR */}
             <div className="mb-6 flex gap-4">
               <input
-                placeholder="Search..."
+                placeholder="Search title, description or tags..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="p-2 bg-slate-800 rounded"
               />
+
               <select
                 value={priorityFilter}
                 onChange={(e) => setPriorityFilter(e.target.value)}
@@ -265,7 +272,6 @@ function BoardPage() {
                 className="w-full mb-4 p-3 bg-slate-800 rounded-lg"
               />
 
-              {/* ✅ NEW TAG INPUT */}
               <input
                 placeholder="Tags (comma separated)"
                 value={form.tags}
