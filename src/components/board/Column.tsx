@@ -55,7 +55,7 @@ function Column({
           : "bg-slate-900/50 border border-slate-800 hover:shadow-xl"
       }`}
     >
-      {/* HEADER */}
+      {}
       <div className="flex justify-between items-center mb-6">
         <h3 className="font-semibold text-slate-200 tracking-tight">
           {title}
@@ -81,7 +81,7 @@ function Column({
         </div>
       </div>
 
-      {/* CONTENT */}
+      {}
       <AnimatePresence initial={false}>
         {!collapsed && (
           <motion.div

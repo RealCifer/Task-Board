@@ -6,7 +6,6 @@ function ActivityLog() {
   const activity = useBoardStore((state) => state.activity)
   const containerRef = useRef<HTMLDivElement>(null)
 
-  // Auto scroll to latest
   useEffect(() => {
     if (containerRef.current) {
       containerRef.current.scrollTop = 0
@@ -98,7 +97,7 @@ function ActivityLog() {
                     transition={{ duration: 0.25 }}
                     className={`relative flex items-center justify-between px-4 py-3 rounded-lg border ${style.bg} hover:scale-[1.02] transition`}
                   >
-                    {/* Timeline Dot */}
+                    {}
                     <span className="absolute -left-2 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-indigo-500"></span>
 
                     <div className="flex items-center gap-3">

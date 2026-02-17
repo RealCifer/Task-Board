@@ -96,7 +96,6 @@ function BoardPage() {
     })
   }
 
-  // 🔥 FULL ENGINEER LEVEL FILTER + SEARCH + SORT
   const processedTasks = useMemo(() => {
     let filtered = [...tasks]
 
@@ -120,7 +119,6 @@ function BoardPage() {
       )
     }
 
-    // Sort by due date (empty last)
     filtered.sort((a, b) => {
       if (!a.dueDate) return 1
       if (!b.dueDate) return -1
@@ -143,7 +141,7 @@ function BoardPage() {
         layout
         className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-slate-100"
       >
-        {/* HEADER */}
+        {}
         <motion.div
           layout
           className="bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 shadow-xl"
@@ -229,7 +227,7 @@ function BoardPage() {
 
           <motion.div layout className="flex-1 p-10">
 
-            {/* FILTER BAR */}
+            {}
             <div className="mb-6 flex gap-4">
               <input
                 placeholder="Search title, description or tags..."
@@ -250,7 +248,7 @@ function BoardPage() {
               </select>
             </div>
 
-            {/* CREATE TASK */}
+            {}
             <motion.div layout className="mb-10 bg-slate-900/60 p-8 rounded-2xl">
               <h3 className="mb-6">Create Task</h3>
 
@@ -314,7 +312,7 @@ function BoardPage() {
               </div>
             </motion.div>
 
-            {/* BOARD */}
+            {}
             <motion.div layout className="grid md:grid-cols-3 gap-8">
               <Column
                 title="Todo"

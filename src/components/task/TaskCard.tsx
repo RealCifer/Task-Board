@@ -37,7 +37,7 @@ function TaskCard({ task, onClick }: Props) {
         transform: hovered ? "rotateX(2deg) rotateY(2deg)" : "none",
       }}
     >
-      {/* 👇 Native draggable div inside motion wrapper */}
+      {}
       <div
         draggable
         onDragStart={handleNativeDragStart}
@@ -98,13 +98,13 @@ function TaskCard({ task, onClick }: Props) {
 
           {task.dueDate && (
             <span className="text-slate-400">
-              📅 {task.dueDate}
+               {task.dueDate}
             </span>
           )}
 
           {isOverdue && (
             <span className="text-red-400 font-medium">
-              ⚠ Overdue
+               Overdue
             </span>
           )}
         </div>
