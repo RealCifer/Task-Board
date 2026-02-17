@@ -1,13 +1,17 @@
 import { useEffect, useState } from "react"
 import { useAuthStore } from "../store/authStore"
 import { useBoardStore } from "../store/boardStore"
+import { Task } from "../types/task"
 import Column from "../components/board/Column"
 import TaskCard from "../components/task/TaskCard"
 import ActivityLog from "../components/board/ActivityLog"
+import EditTaskDrawer from "../components/task/EditTaskDrawer"
 
 function BoardPage() {
   const logout = useAuthStore((state) => state.logout)
   const { tasks, addTask, loadTasks, resetBoard } = useBoardStore()
+
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null)
 
   const [darkMode, setDarkMode] = useState(
     localStorage.getItem("theme") === "dark"
@@ -197,25 +201,45 @@ function BoardPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <Column title="Todo" columnId="todo" count={todoTasks.length}>
             {todoTasks.map((task) => (
-              <TaskCard key={task.id} task={task} />
+              <TaskCard
+                key={task.id}
+                task={task}
+                onClick={() => setSelectedTask(task)}
+              />
             ))}
           </Column>
 
           <Column title="Doing" columnId="doing" count={doingTasks.length}>
             {doingTasks.map((task) => (
-              <TaskCard key={task.id} task={task} />
+              <TaskCard
+                key={task.id}
+                task={task}
+                onClick={() => setSelectedTask(task)}
+              />
             ))}
           </Column>
 
           <Column title="Done" columnId="done" count={doneTasks.length}>
             {doneTasks.map((task) => (
-              <TaskCard key={task.id} task={task} />
+              <TaskCard
+                key={task.id}
+                task={task}
+                onClick={() => setSelectedTask(task)}
+              />
             ))}
           </Column>
         </div>
 
         <ActivityLog />
       </div>
+
+      {/* EDIT DRAWER */}
+      {selectedTask && (
+        <EditTaskDrawer
+          task={selectedTask}
+          onClose={() => setSelectedTask(null)}
+        />
+      )}
     </div>
   )
 }

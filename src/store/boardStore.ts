@@ -18,6 +18,7 @@ interface BoardState {
   tasks: Task[]
   activity: ActivityItem[]
   addTask: (task: NewTaskInput) => void
+  updateTask: (id: string, data: Partial<Task>) => void
   deleteTask: (id: string) => void
   moveTask: (id: string, column: ColumnType) => void
   loadTasks: () => void
@@ -36,13 +37,8 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     const storedTasks = localStorage.getItem(STORAGE_KEY)
     const storedActivity = localStorage.getItem(ACTIVITY_KEY)
 
-    if (storedTasks) {
-      set({ tasks: JSON.parse(storedTasks) })
-    }
-
-    if (storedActivity) {
-      set({ activity: JSON.parse(storedActivity) })
-    }
+    if (storedTasks) set({ tasks: JSON.parse(storedTasks) })
+    if (storedActivity) set({ activity: JSON.parse(storedActivity) })
   },
 
   addActivityInternal: (message: string) => {
@@ -55,7 +51,6 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     const updatedActivity = [newActivity, ...get().activity].slice(0, 30)
 
     localStorage.setItem(ACTIVITY_KEY, JSON.stringify(updatedActivity))
-
     set({ activity: updatedActivity })
   },
 
@@ -73,10 +68,23 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     const updatedTasks = [...get().tasks, newTask]
 
     localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedTasks))
-
     set({ tasks: updatedTasks })
 
     get().addActivityInternal(`Task "${newTask.title}" created`)
+  },
+
+  updateTask: (id, data) => {
+    const updatedTasks = get().tasks.map((task) =>
+      task.id === id ? { ...task, ...data } : task
+    )
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedTasks))
+    set({ tasks: updatedTasks })
+
+    const task = updatedTasks.find((t) => t.id === id)
+    if (task) {
+      get().addActivityInternal(`Task "${task.title}" updated`)
+    }
   },
 
   deleteTask: (id) => {
@@ -86,7 +94,6 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     const updatedTasks = get().tasks.filter((t) => t.id !== id)
 
     localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedTasks))
-
     set({ tasks: updatedTasks })
 
     get().addActivityInternal(`Task "${task.title}" deleted`)
@@ -95,7 +102,6 @@ export const useBoardStore = create<BoardState>((set, get) => ({
   moveTask: (id, column) => {
     const task = get().tasks.find((t) => t.id === id)
     if (!task) return
-
     if (task.column === column) return
 
     const updatedTasks = get().tasks.map((t) =>
@@ -103,7 +109,6 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     )
 
     localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedTasks))
-
     set({ tasks: updatedTasks })
 
     get().addActivityInternal(`Task "${task.title}" moved to ${column}`)
@@ -113,10 +118,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     localStorage.removeItem(STORAGE_KEY)
     localStorage.removeItem(ACTIVITY_KEY)
 
-    set({
-      tasks: [],
-      activity: [],
-    })
+    set({ tasks: [], activity: [] })
   },
 
 }))

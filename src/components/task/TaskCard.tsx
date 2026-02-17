@@ -3,9 +3,10 @@ import { useBoardStore } from "../../store/boardStore"
 
 interface Props {
   task: Task
+  onClick: () => void
 }
 
-function TaskCard({ task }: Props) {
+function TaskCard({ task, onClick }: Props) {
   const deleteTask = useBoardStore((state) => state.deleteTask)
 
   const handleDragStart = (e: React.DragEvent) => {
@@ -19,12 +20,13 @@ function TaskCard({ task }: Props) {
 
   return (
     <div
+      onClick={onClick}
       draggable
       onDragStart={handleDragStart}
-      className={`bg-slate-800/80 border border-slate-700 rounded-xl p-4 shadow-lg hover:shadow-2xl hover:scale-[1.02] hover:shadow-[0_0_25px_rgba(99,102,241,0.3)] transition-all duration-200 relative cursor-grab ${
+      className={`bg-slate-800/80 border border-slate-700 rounded-xl p-4 shadow-lg hover:shadow-2xl hover:scale-[1.02] hover:shadow-[0_0_25px_rgba(99,102,241,0.3)] transition-all duration-200 relative cursor-pointer ${
         isOverdue ? "border-red-500" : ""
       }`}
-      title="Drag to move task"
+      title="Click to edit • Drag to move"
     >
       <div className="flex justify-between items-start">
         <h4 className="font-medium text-slate-100">
@@ -32,7 +34,10 @@ function TaskCard({ task }: Props) {
         </h4>
 
         <button
-          onClick={() => deleteTask(task.id)}
+          onClick={(e) => {
+            e.stopPropagation()
+            deleteTask(task.id)
+          }}
           className="text-red-400 hover:text-red-500 text-sm"
           title="Delete task"
         >
