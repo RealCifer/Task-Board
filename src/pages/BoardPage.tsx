@@ -11,7 +11,15 @@ import EditTaskDrawer from "../components/task/EditTaskDrawer"
 
 function BoardPage() {
   const logout = useAuthStore((state) => state.logout)
-  const { tasks, addTask, loadTasks, resetBoard } = useBoardStore()
+
+  const {
+    tasks,
+    addTask,
+    loadTasks,
+    resetBoard,
+    undo,
+    exportBoard,
+  } = useBoardStore()
 
   const [selectedTask, setSelectedTask] = useState<Task | null>(null)
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -40,8 +48,10 @@ function BoardPage() {
   useEffect(() => {
     if (darkMode) {
       document.documentElement.classList.add("dark")
+      localStorage.setItem("theme", "dark")
     } else {
       document.documentElement.classList.remove("dark")
+      localStorage.setItem("theme", "light")
     }
   }, [darkMode])
 
@@ -69,9 +79,9 @@ function BoardPage() {
     }
   }
 
-  const handleMoveToDoneConfetti = () => {
+  const handleConfetti = () => {
     confetti({
-      particleCount: 120,
+      particleCount: 150,
       spread: 80,
       origin: { y: 0.6 },
     })
@@ -95,60 +105,84 @@ function BoardPage() {
           <div className="max-w-7xl mx-auto px-6 py-6 flex justify-between items-center">
             <h1 className="text-2xl font-semibold">Task Board</h1>
 
-            <div className="flex gap-3">
-              <button
+            <div className="flex gap-3 items-center">
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={() => setSidebarOpen(!sidebarOpen)}
                 className="px-4 py-2 bg-white/20 rounded-lg"
               >
                 ☰
-              </button>
+              </motion.button>
 
-              <button
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={() => setDarkMode(!darkMode)}
                 className="px-4 py-2 bg-white/20 rounded-lg"
               >
                 {darkMode ? "☀" : "🌙"}
-              </button>
+              </motion.button>
 
-              <button
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={undo}
+                className="px-4 py-2 bg-blue-500 rounded-lg"
+              >
+                Undo
+              </motion.button>
+
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={exportBoard}
+                className="px-4 py-2 bg-emerald-500 rounded-lg"
+              >
+                Export
+              </motion.button>
+
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={handleReset}
                 className="px-4 py-2 bg-amber-500 rounded-lg"
               >
                 Reset
-              </button>
+              </motion.button>
 
-              <button
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={logout}
                 className="px-4 py-2 bg-red-500 rounded-lg"
               >
                 Logout
-              </button>
+              </motion.button>
             </div>
           </div>
         </motion.div>
 
         <div className="flex">
-
           {/* SIDEBAR */}
           <AnimatePresence>
             {sidebarOpen && (
               <motion.div
-                initial={{ x: -250 }}
+                initial={{ x: -260 }}
                 animate={{ x: 0 }}
-                exit={{ x: -250 }}
+                exit={{ x: -260 }}
                 transition={{ type: "spring", stiffness: 200 }}
                 className="w-64 bg-slate-900 border-r border-slate-800 p-6"
               >
                 <h2 className="text-lg mb-4">Menu</h2>
                 <p className="text-sm text-slate-400">
-                  Sidebar animated layout.
+                  Phase 3 Activated 😈
                 </p>
               </motion.div>
             )}
           </AnimatePresence>
 
           <motion.div layout className="flex-1 p-10">
-
             {/* CREATE TASK */}
             <motion.div layout className="mb-10 bg-slate-900/60 p-8 rounded-2xl">
               <h3 className="mb-6">Create Task</h3>
@@ -193,12 +227,14 @@ function BoardPage() {
                   className="p-3 bg-slate-800 rounded-lg"
                 />
 
-                <button
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
                   onClick={handleAdd}
                   className="px-6 py-3 bg-indigo-600 rounded-lg"
                 >
                   Add Task
-                </button>
+                </motion.button>
               </div>
             </motion.div>
 
@@ -262,7 +298,7 @@ function BoardPage() {
                         key={task.id}
                         task={task}
                         onClick={() => {
-                          handleMoveToDoneConfetti()
+                          handleConfetti()
                           setSelectedTask(task)
                         }}
                       />

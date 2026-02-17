@@ -14,13 +14,21 @@ interface ActivityItem {
   timestamp: number
 }
 
+interface Snapshot {
+  tasks: Task[]
+  activity: ActivityItem[]
+}
+
 interface BoardState {
   tasks: Task[]
   activity: ActivityItem[]
+  history: Snapshot[]
   addTask: (task: NewTaskInput) => void
   updateTask: (id: string, data: Partial<Task>) => void
   deleteTask: (id: string) => void
   moveTask: (id: string, column: ColumnType) => void
+  undo: () => void
+  exportBoard: () => void
   loadTasks: () => void
   resetBoard: () => void
 }
@@ -32,6 +40,15 @@ export const useBoardStore = create<BoardState>((set, get) => ({
 
   tasks: [],
   activity: [],
+  history: [],
+
+  saveSnapshot: () => {
+    const snapshot: Snapshot = {
+      tasks: get().tasks,
+      activity: get().activity,
+    }
+    set({ history: [...get().history, snapshot].slice(-20) })
+  },
 
   loadTasks: () => {
     const storedTasks = localStorage.getItem(STORAGE_KEY)
@@ -48,13 +65,15 @@ export const useBoardStore = create<BoardState>((set, get) => ({
       timestamp: Date.now(),
     }
 
-    const updatedActivity = [newActivity, ...get().activity].slice(0, 30)
+    const updatedActivity = [newActivity, ...get().activity].slice(0, 50)
 
     localStorage.setItem(ACTIVITY_KEY, JSON.stringify(updatedActivity))
     set({ activity: updatedActivity })
   },
 
   addTask: (taskData) => {
+    get().saveSnapshot()
+
     const newTask: Task = {
       id: crypto.randomUUID(),
       title: taskData.title,
@@ -74,6 +93,8 @@ export const useBoardStore = create<BoardState>((set, get) => ({
   },
 
   updateTask: (id, data) => {
+    get().saveSnapshot()
+
     const updatedTasks = get().tasks.map((task) =>
       task.id === id ? { ...task, ...data } : task
     )
@@ -82,12 +103,12 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     set({ tasks: updatedTasks })
 
     const task = updatedTasks.find((t) => t.id === id)
-    if (task) {
-      get().addActivityInternal(`Task "${task.title}" updated`)
-    }
+    if (task) get().addActivityInternal(`Task "${task.title}" updated`)
   },
 
   deleteTask: (id) => {
+    get().saveSnapshot()
+
     const task = get().tasks.find((t) => t.id === id)
     if (!task) return
 
@@ -100,6 +121,8 @@ export const useBoardStore = create<BoardState>((set, get) => ({
   },
 
   moveTask: (id, column) => {
+    get().saveSnapshot()
+
     const task = get().tasks.find((t) => t.id === id)
     if (!task) return
     if (task.column === column) return
@@ -114,11 +137,37 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     get().addActivityInternal(`Task "${task.title}" moved to ${column}`)
   },
 
+  undo: () => {
+    const history = get().history
+    if (history.length === 0) return
+
+    const previous = history[history.length - 1]
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(previous.tasks))
+    localStorage.setItem(ACTIVITY_KEY, JSON.stringify(previous.activity))
+
+    set({
+      tasks: previous.tasks,
+      activity: previous.activity,
+      history: history.slice(0, -1),
+    })
+  },
+
+  exportBoard: () => {
+    const data = JSON.stringify(get().tasks, null, 2)
+    const blob = new Blob([data], { type: "application/json" })
+    const url = URL.createObjectURL(blob)
+
+    const a = document.createElement("a")
+    a.href = url
+    a.download = "task-board.json"
+    a.click()
+  },
+
   resetBoard: () => {
     localStorage.removeItem(STORAGE_KEY)
     localStorage.removeItem(ACTIVITY_KEY)
-
-    set({ tasks: [], activity: [] })
+    set({ tasks: [], activity: [], history: [] })
   },
 
 }))
