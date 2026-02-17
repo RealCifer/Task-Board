@@ -15,7 +15,6 @@ function TaskCard({ task, onClick }: Props) {
   const handleDragStart = (e: React.DragEvent) => {
     e.dataTransfer.setData("taskId", task.id)
 
-    // Custom drag preview (ghost effect)
     const ghost = document.createElement("div")
     ghost.innerText = task.title
     ghost.style.padding = "8px 16px"
@@ -84,19 +83,35 @@ function TaskCard({ task, onClick }: Props) {
         </p>
       )}
 
+      {/* TAGS */}
+      {task.tags && task.tags.length > 0 && (
+        <div className="flex flex-wrap gap-2 mt-3">
+          {task.tags.map((tag, index) => (
+            <span
+              key={index}
+              className="text-xs px-2 py-1 rounded-full bg-indigo-500/20 text-indigo-300"
+            >
+              #{tag}
+            </span>
+          ))}
+        </div>
+      )}
+
       {/* META */}
       <div className="flex gap-2 mt-3 text-xs items-center flex-wrap">
-        <span
-          className={`px-3 py-1 rounded-full font-medium ${
-            task.priority === "High"
-              ? "bg-red-500/20 text-red-400"
-              : task.priority === "Medium"
-              ? "bg-yellow-500/20 text-yellow-400"
-              : "bg-green-500/20 text-green-400"
-          }`}
-        >
-          {task.priority}
-        </span>
+        {task.priority && (
+          <span
+            className={`px-3 py-1 rounded-full font-medium ${
+              task.priority === "High"
+                ? "bg-red-500/20 text-red-400"
+                : task.priority === "Medium"
+                ? "bg-yellow-500/20 text-yellow-400"
+                : "bg-green-500/20 text-green-400"
+            }`}
+          >
+            {task.priority}
+          </span>
+        )}
 
         {task.dueDate && (
           <span className="text-slate-400">

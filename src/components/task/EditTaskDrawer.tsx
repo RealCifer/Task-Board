@@ -16,6 +16,7 @@ function EditTaskDrawer({ task, onClose }: Props) {
     description: task.description || "",
     priority: task.priority || "Low",
     dueDate: task.dueDate || "",
+    tags: task.tags?.join(", ") || "",
   })
 
   // Sync when switching tasks
@@ -25,6 +26,7 @@ function EditTaskDrawer({ task, onClose }: Props) {
       description: task.description || "",
       priority: task.priority || "Low",
       dueDate: task.dueDate || "",
+      tags: task.tags?.join(", ") || "",
     })
   }, [task])
 
@@ -44,6 +46,10 @@ function EditTaskDrawer({ task, onClose }: Props) {
       description: form.description,
       priority: form.priority as "Low" | "Medium" | "High",
       dueDate: form.dueDate,
+      tags: form.tags
+        .split(",")
+        .map((t) => t.trim())
+        .filter(Boolean),
     })
 
     onClose()
@@ -73,7 +79,6 @@ function EditTaskDrawer({ task, onClose }: Props) {
           className="w-full max-w-md h-full bg-slate-900/95 backdrop-blur-xl border-l border-slate-700 p-8 shadow-2xl overflow-y-auto"
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Header */}
           <motion.h2
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -82,26 +87,8 @@ function EditTaskDrawer({ task, onClose }: Props) {
             Edit Task
           </motion.h2>
 
-          {/* Form */}
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={{
-              hidden: {},
-              visible: {
-                transition: {
-                  staggerChildren: 0.07,
-                },
-              },
-            }}
-            className="space-y-5"
-          >
-            {/* Title */}
-            <motion.input
-              variants={{
-                hidden: { opacity: 0, y: 10 },
-                visible: { opacity: 1, y: 0 },
-              }}
+          <div className="space-y-5">
+            <input
               value={form.title}
               onChange={(e) =>
                 setForm({ ...form, title: e.target.value })
@@ -110,12 +97,7 @@ function EditTaskDrawer({ task, onClose }: Props) {
               placeholder="Task title"
             />
 
-            {/* Description */}
-            <motion.textarea
-              variants={{
-                hidden: { opacity: 0, y: 10 },
-                visible: { opacity: 1, y: 0 },
-              }}
+            <textarea
               value={form.description}
               onChange={(e) =>
                 setForm({ ...form, description: e.target.value })
@@ -124,12 +106,17 @@ function EditTaskDrawer({ task, onClose }: Props) {
               placeholder="Description"
             />
 
-            {/* Priority */}
-            <motion.select
-              variants={{
-                hidden: { opacity: 0, y: 10 },
-                visible: { opacity: 1, y: 0 },
-              }}
+            {/* TAGS INPUT */}
+            <input
+              value={form.tags}
+              onChange={(e) =>
+                setForm({ ...form, tags: e.target.value })
+              }
+              className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none transition"
+              placeholder="Tags (comma separated)"
+            />
+
+            <select
               value={form.priority}
               onChange={(e) =>
                 setForm({ ...form, priority: e.target.value })
@@ -139,14 +126,9 @@ function EditTaskDrawer({ task, onClose }: Props) {
               <option value="Low">Low</option>
               <option value="Medium">Medium</option>
               <option value="High">High</option>
-            </motion.select>
+            </select>
 
-            {/* Due Date */}
-            <motion.input
-              variants={{
-                hidden: { opacity: 0, y: 10 },
-                visible: { opacity: 1, y: 0 },
-              }}
+            <input
               type="date"
               value={form.dueDate}
               onChange={(e) =>
@@ -155,14 +137,7 @@ function EditTaskDrawer({ task, onClose }: Props) {
               className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-3"
             />
 
-            {/* Buttons */}
-            <motion.div
-              variants={{
-                hidden: { opacity: 0, y: 10 },
-                visible: { opacity: 1, y: 0 },
-              }}
-              className="flex gap-3 pt-4"
-            >
+            <div className="flex gap-3 pt-4">
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -180,8 +155,8 @@ function EditTaskDrawer({ task, onClose }: Props) {
               >
                 Cancel
               </motion.button>
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
         </motion.div>
       </motion.div>
     </AnimatePresence>

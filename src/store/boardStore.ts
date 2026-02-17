@@ -6,6 +6,7 @@ interface NewTaskInput {
   description?: string
   priority?: "Low" | "Medium" | "High"
   dueDate?: string
+  tags?: string[]
 }
 
 interface ActivityItem {
@@ -80,6 +81,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
       description: taskData.description,
       priority: taskData.priority || "Low",
       dueDate: taskData.dueDate,
+      tags: taskData.tags || [],
       createdAt: new Date().toISOString(),
       column: "todo",
     }

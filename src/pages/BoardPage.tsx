@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useMemo } from "react"
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion"
 import confetti from "canvas-confetti"
 import { useAuthStore } from "../store/authStore"
@@ -34,11 +34,16 @@ function BoardPage() {
     localStorage.getItem("theme") === "dark"
   )
 
+  // ✅ NEW: Search + Filter
+  const [search, setSearch] = useState("")
+  const [priorityFilter, setPriorityFilter] = useState("All")
+
   const [form, setForm] = useState({
     title: "",
     description: "",
     priority: "Low",
     dueDate: "",
+    tags: "", // ✅ NEW
   })
 
   useEffect(() => {
@@ -63,6 +68,10 @@ function BoardPage() {
       description: form.description,
       priority: form.priority as "Low" | "Medium" | "High",
       dueDate: form.dueDate,
+      tags: form.tags
+        .split(",")
+        .map((t) => t.trim())
+        .filter(Boolean), // ✅ NEW
     })
 
     setForm({
@@ -70,6 +79,7 @@ function BoardPage() {
       description: "",
       priority: "Low",
       dueDate: "",
+      tags: "",
     })
   }
 
@@ -87,9 +97,38 @@ function BoardPage() {
     })
   }
 
-  const todoTasks = tasks.filter((t) => t.column === "todo")
-  const doingTasks = tasks.filter((t) => t.column === "doing")
-  const doneTasks = tasks.filter((t) => t.column === "done")
+  // ✅ NEW: Filter + Sort BEFORE splitting columns
+  const processedTasks = useMemo(() => {
+    let filtered = [...tasks]
+
+    if (search) {
+      filtered = filtered.filter((task) =>
+        task.title.toLowerCase().includes(search.toLowerCase())
+      )
+    }
+
+    if (priorityFilter !== "All") {
+      filtered = filtered.filter(
+        (task) => task.priority === priorityFilter
+      )
+    }
+
+    // Sort by due date (empty last)
+    filtered.sort((a, b) => {
+      if (!a.dueDate) return 1
+      if (!b.dueDate) return -1
+      return (
+        new Date(a.dueDate).getTime() -
+        new Date(b.dueDate).getTime()
+      )
+    })
+
+    return filtered
+  }, [tasks, search, priorityFilter])
+
+  const todoTasks = processedTasks.filter((t) => t.column === "todo")
+  const doingTasks = processedTasks.filter((t) => t.column === "doing")
+  const doneTasks = processedTasks.filter((t) => t.column === "done")
 
   return (
     <LayoutGroup>
@@ -183,6 +222,27 @@ function BoardPage() {
           </AnimatePresence>
 
           <motion.div layout className="flex-1 p-10">
+
+            {/* ✅ NEW FILTER BAR */}
+            <div className="mb-6 flex gap-4">
+              <input
+                placeholder="Search..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="p-2 bg-slate-800 rounded"
+              />
+              <select
+                value={priorityFilter}
+                onChange={(e) => setPriorityFilter(e.target.value)}
+                className="p-2 bg-slate-800 rounded"
+              >
+                <option>All</option>
+                <option>Low</option>
+                <option>Medium</option>
+                <option>High</option>
+              </select>
+            </div>
+
             {/* CREATE TASK */}
             <motion.div layout className="mb-10 bg-slate-900/60 p-8 rounded-2xl">
               <h3 className="mb-6">Create Task</h3>
@@ -201,6 +261,16 @@ function BoardPage() {
                 value={form.description}
                 onChange={(e) =>
                   setForm({ ...form, description: e.target.value })
+                }
+                className="w-full mb-4 p-3 bg-slate-800 rounded-lg"
+              />
+
+              {/* ✅ NEW TAG INPUT */}
+              <input
+                placeholder="Tags (comma separated)"
+                value={form.tags}
+                onChange={(e) =>
+                  setForm({ ...form, tags: e.target.value })
                 }
                 className="w-full mb-4 p-3 bg-slate-800 rounded-lg"
               />
