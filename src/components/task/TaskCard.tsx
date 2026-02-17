@@ -56,13 +56,9 @@ function TaskCard({ task, onClick }: Props) {
       style={{
         transform: hovered ? "rotateX(2deg) rotateY(2deg)" : "none",
       }}
-      title="Click to edit • Drag to move"
     >
-      {/* HEADER */}
       <div className="flex justify-between items-start">
-        <h4 className="font-medium text-slate-100">
-          {task.title}
-        </h4>
+        <h4 className="font-medium text-slate-100">{task.title}</h4>
 
         <button
           onClick={(e) => {
@@ -70,20 +66,15 @@ function TaskCard({ task, onClick }: Props) {
             deleteTask(task.id)
           }}
           className="text-red-400 hover:text-red-500 text-sm transition"
-          title="Delete task"
         >
           ✕
         </button>
       </div>
 
-      {/* DESCRIPTION */}
       {task.description && (
-        <p className="text-sm text-slate-400 mt-2">
-          {task.description}
-        </p>
+        <p className="text-sm text-slate-400 mt-2">{task.description}</p>
       )}
 
-      {/* TAGS */}
       {task.tags && task.tags.length > 0 && (
         <div className="flex flex-wrap gap-2 mt-3">
           {task.tags.map((tag, index) => (
@@ -97,7 +88,6 @@ function TaskCard({ task, onClick }: Props) {
         </div>
       )}
 
-      {/* META */}
       <div className="flex gap-2 mt-3 text-xs items-center flex-wrap">
         {task.priority && (
           <span
@@ -114,15 +104,11 @@ function TaskCard({ task, onClick }: Props) {
         )}
 
         {task.dueDate && (
-          <span className="text-slate-400">
-            📅 {task.dueDate}
-          </span>
+          <span className="text-slate-400">📅 {task.dueDate}</span>
         )}
 
         {isOverdue && (
-          <span className="text-red-400 font-medium">
-            ⚠ Overdue
-          </span>
+          <span className="text-red-400 font-medium">⚠ Overdue</span>
         )}
       </div>
     </motion.div>

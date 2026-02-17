@@ -126,8 +126,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     get().saveSnapshot()
 
     const task = get().tasks.find((t) => t.id === id)
-    if (!task) return
-    if (task.column === column) return
+    if (!task || task.column === column) return
 
     const updatedTasks = get().tasks.map((t) =>
       t.id === id ? { ...t, column } : t
