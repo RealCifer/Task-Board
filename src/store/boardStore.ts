@@ -24,6 +24,10 @@ interface BoardState {
   tasks: Task[]
   activity: ActivityItem[]
   history: Snapshot[]
+
+  saveSnapshot: () => void
+  addActivityInternal: (message: string) => void
+
   addTask: (task: NewTaskInput) => void
   updateTask: (id: string, data: Partial<Task>) => void
   deleteTask: (id: string) => void

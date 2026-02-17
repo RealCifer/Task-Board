@@ -8,29 +8,35 @@ interface Props {
   onClose: () => void
 }
 
+type PriorityType = "Low" | "Medium" | "High"
+
 function EditTaskDrawer({ task, onClose }: Props) {
   const updateTask = useBoardStore((state) => state.updateTask)
 
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<{
+    title: string
+    description: string
+    priority: PriorityType
+    dueDate: string
+    tags: string
+  }>({
     title: task.title,
     description: task.description || "",
-    priority: task.priority || "Low",
+    priority: (task.priority || "Low") as PriorityType,
     dueDate: task.dueDate || "",
     tags: task.tags?.join(", ") || "",
   })
 
-  // Sync when switching tasks
   useEffect(() => {
     setForm({
       title: task.title,
       description: task.description || "",
-      priority: task.priority || "Low",
+      priority: (task.priority || "Low") as PriorityType,
       dueDate: task.dueDate || "",
       tags: task.tags?.join(", ") || "",
     })
   }, [task])
 
-  // ESC close
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose()
@@ -44,7 +50,7 @@ function EditTaskDrawer({ task, onClose }: Props) {
     updateTask(task.id, {
       title: form.title,
       description: form.description,
-      priority: form.priority as "Low" | "Medium" | "High",
+      priority: form.priority,
       dueDate: form.dueDate,
       tags: form.tags
         .split(",")
@@ -58,34 +64,23 @@ function EditTaskDrawer({ task, onClose }: Props) {
   return (
     <AnimatePresence>
       <motion.div
-        key="backdrop"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        transition={{ duration: 0.2 }}
         className="fixed inset-0 bg-black/50 backdrop-blur-md z-50 flex justify-end"
         onClick={onClose}
       >
         <motion.div
-          key="drawer"
-          initial={{ x: "100%", opacity: 0.8 }}
-          animate={{ x: 0, opacity: 1 }}
-          exit={{ x: "100%", opacity: 0.8 }}
-          transition={{
-            type: "spring",
-            stiffness: 280,
-            damping: 28,
-          }}
-          className="w-full max-w-md h-full bg-slate-900/95 backdrop-blur-xl border-l border-slate-700 p-8 shadow-2xl overflow-y-auto"
+          initial={{ x: "100%" }}
+          animate={{ x: 0 }}
+          exit={{ x: "100%" }}
+          transition={{ type: "spring", stiffness: 280, damping: 28 }}
+          className="w-full max-w-md h-full bg-slate-900 border-l border-slate-700 p-8 shadow-2xl overflow-y-auto"
           onClick={(e) => e.stopPropagation()}
         >
-          <motion.h2
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-xl font-semibold mb-8 text-slate-100"
-          >
+          <h2 className="text-xl font-semibold mb-8 text-slate-100">
             Edit Task
-          </motion.h2>
+          </h2>
 
           <div className="space-y-5">
             <input
@@ -93,8 +88,7 @@ function EditTaskDrawer({ task, onClose }: Props) {
               onChange={(e) =>
                 setForm({ ...form, title: e.target.value })
               }
-              className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none transition"
-              placeholder="Task title"
+              className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-3"
             />
 
             <textarea
@@ -102,24 +96,25 @@ function EditTaskDrawer({ task, onClose }: Props) {
               onChange={(e) =>
                 setForm({ ...form, description: e.target.value })
               }
-              className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none transition"
-              placeholder="Description"
+              className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-3"
             />
 
-            {/* TAGS INPUT */}
             <input
               value={form.tags}
               onChange={(e) =>
                 setForm({ ...form, tags: e.target.value })
               }
-              className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none transition"
+              className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-3"
               placeholder="Tags (comma separated)"
             />
 
             <select
               value={form.priority}
               onChange={(e) =>
-                setForm({ ...form, priority: e.target.value })
+                setForm({
+                  ...form,
+                  priority: e.target.value as PriorityType,
+                })
               }
               className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-3"
             >
@@ -138,23 +133,19 @@ function EditTaskDrawer({ task, onClose }: Props) {
             />
 
             <div className="flex gap-3 pt-4">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+              <button
                 onClick={handleSave}
-                className="flex-1 px-4 py-3 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 hover:shadow-[0_0_25px_rgba(99,102,241,0.6)] transition font-medium"
+                className="flex-1 px-4 py-3 rounded-lg bg-indigo-600"
               >
-                Save Changes
-              </motion.button>
+                Save
+              </button>
 
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+              <button
                 onClick={onClose}
-                className="px-4 py-3 rounded-lg bg-slate-700 hover:bg-slate-600 transition"
+                className="px-4 py-3 rounded-lg bg-slate-700"
               >
                 Cancel
-              </motion.button>
+              </button>
             </div>
           </div>
         </motion.div>

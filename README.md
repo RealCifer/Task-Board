@@ -18,7 +18,7 @@ This project focuses on clean architecture, state management, animations, persis
 
 ---
 
-### 🏷 Tags System
+### Tags System
 - Add comma-separated tags while creating tasks
 - Edit tags in drawer
 - Tags rendered as UI badges
@@ -157,7 +157,7 @@ npm run dev
 
 ---
 
-## 🏗 Build
+## Build
 
 ```bash
 npm run build
@@ -191,14 +191,14 @@ Contains all tasks in formatted JSON.
 
 ## What This Demonstrates
 
-✔ State architecture  
-✔ UI/UX polish  
-✔ Animation systems  
-✔ Persistence logic  
-✔ Undo stack design  
-✔ Filtering & sorting logic  
-✔ Clean TypeScript typing  
-✔ Modular folder structure  
+State architecture  
+UI/UX polish  
+Animation systems  
+Persistence logic  
+Undo stack design  
+Filtering & sorting logic  
+Clean TypeScript typing  
+Modular folder structure  
 
 ---
 
